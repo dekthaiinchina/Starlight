@@ -2,7 +2,7 @@ import { ServiceExecute } from "@/client/structures/ServiceExecute";
 import { IDatabase } from "@/client/interfaces/IDatabase";
 import { CommandContext, Embed, UsingClient } from "seyfert";
 import { LoopCommandOptions } from "@/client/commands/music/loop";
-import { ads_component, ads_image, ads_text } from "@/lib/ad";
+import config from "@/config";
 
 const LoopCommand: ServiceExecute = {
 	name: "LoopCommand",
@@ -34,16 +34,16 @@ const LoopCommand: ServiceExecute = {
 				case "song": {
 					player.setTrackRepeat(true);
 					interaction.editOrReply({
-						components: [ads_component],
+						components: [config.config.ads_component],
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
 								.setDescription(`Song loop has been successfully turned ${player.trackRepeat ? "on" : "off"}`)
-								.setImage(ads_image)
+								.setImage(config.config.ads_image)
 								.addFields([
 									{
 										name: "Sponsor",
-										value: ads_text,
+										value: config.config.ads_text,
 										inline: false,
 									},
 								])
@@ -55,16 +55,16 @@ const LoopCommand: ServiceExecute = {
 				case "queue": {
 					player.setQueueRepeat(true);
 					interaction.editOrReply({
-						components: [ads_component],
+						components: [config.config.ads_component],
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
 								.setDescription(`${player.queueRepeat ? "on" : "off"} Queue loop complete`)
-								.setImage(ads_image)
+								.setImage(config.config.ads_image)
 								.addFields([
 									{
 										name: "Sponsor",
-										value: ads_text,
+										value: config.config.ads_text,
 										inline: false,
 									},
 								])
@@ -77,16 +77,16 @@ const LoopCommand: ServiceExecute = {
 					player.setTrackRepeat(false);
 					player.setQueueRepeat(false);
 					interaction.editOrReply({
-						components: [ads_component],
+						components: [config.config.ads_component],
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
 								.setDescription(`Loop closed successfully.`)
-								.setImage(ads_image)
+								.setImage(config.config.ads_image)
 								.addFields([
 									{
 										name: "Sponsor",
-										value: ads_text,
+										value: config.config.ads_text,
 										inline: false,
 									},
 								])

@@ -1,8 +1,8 @@
 import { CommandContext, UsingClient } from 'seyfert';
 import { PlayCommandOptions } from "@/client/commands/music/play";
 import { IDatabase } from "@/client/interfaces/IDatabase";
-import { ads_component, ads_image, ads_text } from "@/lib/ad";
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
+import config from '@/config';
 
 const MusicPlay: ServiceExecute = {
 	name: "MusicPlay",
@@ -92,7 +92,7 @@ const MusicPlay: ServiceExecute = {
 				{
 					const playlist = res.playlist;
 					await interaction.editOrReply({
-						components: [ads_component],
+						components: [config.config.ads_component],
 						embeds: [
 							{
 								author: {
@@ -102,7 +102,7 @@ const MusicPlay: ServiceExecute = {
 								title: `\`\`🟢\`\` ${t.play.added_playlist.get()}:  \`${playlist.name}\``,
 								color: 0xa861ff, // Purple color
 								image: {
-									url: ads_image,
+									url: config.config.ads_image,
 								},
 								fields: [
 									{
@@ -117,7 +117,7 @@ const MusicPlay: ServiceExecute = {
 									},
 									{
 										name: "Sponsor",
-										value: ads_text,
+										value: config.config.ads_text,
 										inline: false,
 									},
 								],
@@ -137,7 +137,7 @@ const MusicPlay: ServiceExecute = {
 				{
 					const track = res.tracks[0];
 					await interaction.editOrReply({
-						components: [ads_component],
+						components: [config.config.ads_component],
 						embeds: [
 							{
 								author: {
@@ -147,7 +147,7 @@ const MusicPlay: ServiceExecute = {
 								title: `\`\`🟢\`\` ${t.play.added_song.get()}:  \`${track.title}\``,
 								color: 0xa861ff, // Purple color
 								image: {
-									url: ads_image,
+									url: config.config.ads_image,
 								},
 								fields: [
 									{
@@ -162,7 +162,7 @@ const MusicPlay: ServiceExecute = {
 									},
 									{
 										name: "Sponsor",
-										value: ads_text,
+										value: config.config.ads_text,
 										inline: false,
 									},
 								],
@@ -194,7 +194,7 @@ const MusicPlay: ServiceExecute = {
 				player.queue.add(track);
 
 				await interaction.editOrReply({
-					components: [ads_component],
+					components: [config.config.ads_component],
 					embeds: [
 						{
 							author: {
@@ -204,7 +204,7 @@ const MusicPlay: ServiceExecute = {
 							title: `\`\`🟢\`\` ${t.play.added_song.get()}:  \`${track.title}\``,
 							color: 0xa861ff, // Purple color
 							image: {
-								url: ads_image,
+								url: config.config.ads_image,
 							},
 							fields: [
 								{
@@ -219,7 +219,7 @@ const MusicPlay: ServiceExecute = {
 								},
 								{
 									name: "Sponsor",
-									value: ads_text,
+									value: config.config.ads_text,
 									inline: false,
 								},
 							],
