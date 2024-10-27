@@ -136,7 +136,7 @@ export class ServiceLoader {
                 name: guild.name,
                 roomid: "0",
                 lang: $Enums.Lang.en,
-                room: { id: "0", message: "0" },
+                room: { id: "0", message: "0", uuid: "" },
             };
 
         await this.client.redis.set(`guild:${this.client.me.id}:${guild.id}`, JSON.stringify(database));
@@ -150,7 +150,7 @@ export class ServiceLoader {
             name: data.name || '',
             roomid: data.roomid || "0",
             lang: data.lang || $Enums.Lang.en,
-            room: data.room || { id: "0", message: "0" },
+            room: data.room || { id: "0", message: "0", uuid: "" },
         };
     }
 

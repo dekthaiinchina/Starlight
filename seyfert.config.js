@@ -5,6 +5,7 @@ const c = require("./dist/config.js");
 
 module.exports = config.bot({
     token: c.default.TOKEN ?? "",
+    debug: true,
     intents: ["Guilds", "GuildVoiceStates"],
     locations: {
         base: "src/client",
