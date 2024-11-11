@@ -9,7 +9,6 @@ const NodeCommand: ServiceExecute = {
 	type: "commands",
 	filePath: __filename,
 	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext) {
-		await interaction.deferReply();
 		await interaction.editOrReply({
 			embeds: [
 				{
