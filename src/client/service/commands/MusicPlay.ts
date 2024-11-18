@@ -92,7 +92,7 @@ const MusicPlay: ServiceExecute = {
 				{
 					const playlist = res.playlist;
 					await interaction.editOrReply({
-						components: [config.config.ads_component],
+						components: [config.config.ads_component || undefined],
 						embeds: [
 							{
 								author: {
@@ -129,15 +129,19 @@ const MusicPlay: ServiceExecute = {
 							},
 						],
 					});
-					player.queue.add(res.playlist.tracks);
-					if (!player.playing) await player.play();
+					if (!player.queue || !player.queue.current) {
+						player.queue.add(res.playlist.tracks)
+						await player.play()
+					} else {
+						player.queue.add(res.playlist.tracks)
+					}
 				}
 				break;
 			case "track":
 				{
 					const track = res.tracks[0];
 					await interaction.editOrReply({
-						components: [config.config.ads_component],
+						components: [config.config.ads_component || undefined],
 						embeds: [
 							{
 								author: {
@@ -174,8 +178,12 @@ const MusicPlay: ServiceExecute = {
 							},
 						],
 					});
-					player.queue.add(track);
-					if (!player.playing) await player.play();
+					if (!player.queue || !player.queue.current) {
+						player.queue.add(track)
+						await player.play()
+					} else {
+						player.queue.add(track)
+					}
 				}
 				break;
 			case "search": {
@@ -194,7 +202,7 @@ const MusicPlay: ServiceExecute = {
 				player.queue.add(track);
 
 				await interaction.editOrReply({
-					components: [config.config.ads_component],
+					components: [config.config.ads_component || undefined],
 					embeds: [
 						{
 							author: {
@@ -231,8 +239,9 @@ const MusicPlay: ServiceExecute = {
 						},
 					],
 				});
-
-				if (!player.playing) await player.play();
+				if (!player.queue || !player.queue.current) {
+					await player.play()
+				}
 				break;
 			}
 		}
