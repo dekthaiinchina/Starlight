@@ -13,10 +13,10 @@ const config: { [key: string]: IConfig } = {
 		},
 		Lavalink: [
 			{
-				identifier: "Jirayu.net[0] [recommend]",
-				host: "lavalink.jirayu.net",
-				password: "youshallnotpass",
-				port: 13592,
+				identifier: "Anantix [recommend]",
+				host: "lavalink.anantix.network",
+				password: "pg6|(}7fuD_:7d#QQq?9",
+				port: 2335,
 				playback: true,
 				search: true,
 				version: "v4",
@@ -33,12 +33,12 @@ const config: { [key: string]: IConfig } = {
 		},
 		Lavalink: [
 			{
-				identifier: "Jirayu.net[1]",
-				host: "lavalink.jirayu.net",
-				password: "youshallnotpass",
-				port: 13592,
-				playback: false,
-				search: false,
+				identifier: "Anantix [recommend]",
+				host: "lavalink.anantix.network",
+				password: "pg6|(}7fuD_:7d#QQq?9",
+				port: 2335,
+				playback: true,
+				search: true,
 				version: "v4",
 			},
 		],

@@ -18,28 +18,6 @@ export function UpdateStatus(client: UsingClient) {
                         uptime: data.stats.uptime,
                     };
                 }),
-                cluster: client.cluster.broadcastEval((c) => {
-                    const guilds = c.cache.guilds.count();
-                    const client_id = c.me.id;
-                    const memory = process.memoryUsage().heapUsed;
-                    const ping = c.gateway.latency;
-                    const uptime = c.uptime;
-                    return {
-                        cluster_id: c.cluster.id,
-                        memory,
-                        guilds,
-                        users: (() => {
-                            let totalMembers = 0;
-                            for (const guild of c.cache.guilds.values()) {
-                                totalMembers += guild.memberCount;
-                            }
-                            return totalMembers;
-                        })(),
-                        client_id,
-                        ping,
-                        uptime,
-                    };
-                }),
             }),
         ).then((d) => {
 			return d
