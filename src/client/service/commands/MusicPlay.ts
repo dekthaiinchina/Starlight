@@ -129,8 +129,12 @@ const MusicPlay: ServiceExecute = {
 							},
 						],
 					});
-					player.queue.add(res.playlist.tracks);
-					if (!player.playing) await player.play();
+					if (!player.queue || !player.queue.current) {
+						player.queue.add(res.playlist.tracks)
+						await player.play()
+					} else {
+						player.queue.add(res.playlist.tracks)
+					}
 				}
 				break;
 			case "track":
@@ -174,8 +178,12 @@ const MusicPlay: ServiceExecute = {
 							},
 						],
 					});
-					player.queue.add(track);
-					if (!player.playing) await player.play();
+					if (!player.queue || !player.queue.current) {
+						player.queue.add(track)
+						await player.play()
+					} else {
+						player.queue.add(track)
+					}
 				}
 				break;
 			case "search": {
@@ -231,8 +239,9 @@ const MusicPlay: ServiceExecute = {
 						},
 					],
 				});
-
-				if (!player.playing) await player.play();
+				if (!player.queue || !player.queue.current) {
+					await player.play()
+				}
 				break;
 			}
 		}
