@@ -53,7 +53,7 @@ const Botinfo: ServiceExecute = {
             const clusterData = await client.cluster.broadcastEval((c) => {
                 const users = () => {
                     let totalMembers = 0;
-                    for (const guild of c.cache.guilds.values()) {
+                    for (const guild of c.cache.guilds.values().filter((g) => g.memberCount)) {
                         totalMembers += guild.memberCount;
                     }
                     return totalMembers;

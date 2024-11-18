@@ -92,7 +92,7 @@ const MusicPlay: ServiceExecute = {
 				{
 					const playlist = res.playlist;
 					await interaction.editOrReply({
-						components: [config.config.ads_component],
+						components: [config.config.ads_component || undefined],
 						embeds: [
 							{
 								author: {
@@ -141,7 +141,7 @@ const MusicPlay: ServiceExecute = {
 				{
 					const track = res.tracks[0];
 					await interaction.editOrReply({
-						components: [config.config.ads_component],
+						components: [config.config.ads_component || undefined],
 						embeds: [
 							{
 								author: {
@@ -202,7 +202,7 @@ const MusicPlay: ServiceExecute = {
 				player.queue.add(track);
 
 				await interaction.editOrReply({
-					components: [config.config.ads_component],
+					components: [config.config.ads_component || undefined],
 					embeds: [
 						{
 							author: {

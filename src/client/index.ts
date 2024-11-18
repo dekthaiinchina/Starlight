@@ -7,8 +7,8 @@ Logger.customize(customLogger);
 client.start().then(() => {
 	client.uploadCommands().then(() => {
 		client.logger.info("Commands uploaded");
-	}).catch((err) => {
-		client.logger.error(err);
+	}).catch((err: Error) => {
+		client.logger.error(err.message);
 	});
 	//client.redis.connect();
 }).catch((err) => {
