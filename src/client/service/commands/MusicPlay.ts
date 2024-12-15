@@ -57,7 +57,6 @@ const MusicPlay: ServiceExecute = {
 			});
 
 		if (player.state !== "CONNECTED") player.connect();
-		console.log(res)
 		switch (res.loadType) {
 			default:
 				{

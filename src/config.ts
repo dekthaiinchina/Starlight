@@ -7,9 +7,9 @@ const config: { [key: string]: IConfig } = {
 		TOKEN: process.env.DEVELOPMENT_TOKEN,
 		REDIS: process.env.DEVELOPMENT_REDIS,
 		config: {
-			ads_text: "กำลังมองหาเซิร์ฟเวอร์ Minecraft แนว PvP หรือ SMP อยู่ใช่ไหม?",
-			ads_image: "https://cdn.faystarnext.studio/RinthongAds.png",
-			ads_component: new ActionRow().addComponents(new Button().setLabel("Link").setStyle(5).setEmoji("🔗").setURL("https://discord.gg/gsHWw9XyE6"))
+			ads_text: "Anantix Cloud: บริการเปิด Minecraft Server และออื่นๆ อีกมากมาย!",
+			ads_image: "https://r2.anantix.network/assets/img/packpterodactyl.png",
+			ads_component: new ActionRow().addComponents(new Button().setLabel("Link").setStyle(5).setEmoji("🔗").setURL("https://discord.gg/anantix"))
 		},
 		Lavalink: [
 			{
@@ -27,9 +27,9 @@ const config: { [key: string]: IConfig } = {
 		TOKEN: process.env.PRODUCTION_TOKEN,
 		REDIS: process.env.PRODUCTION_REDIS,
 		config: {
-			ads_text: "กำลังมองหาเซิร์ฟเวอร์ Minecraft แนว PvP หรือ SMP อยู่ใช่ไหม?",
-			ads_image: "https://cdn.faystarnext.studio/RinthongAds.png",
-			ads_component: new ActionRow().addComponents(new Button().setLabel("Link").setStyle(5).setEmoji("🔗").setURL("https://discord.gg/gsHWw9XyE6"))
+			ads_text: "Anantix Cloud: บริการเปิด Minecraft Server และออื่นๆ อีกมากมาย!",
+			ads_image: "https://r2.anantix.network/assets/img/packpterodactyl.png",
+			ads_component: new ActionRow().addComponents(new Button().setLabel("Link").setStyle(5).setEmoji("🔗").setURL("https://discord.gg/anantix"))
 		},
 		Lavalink: [
 			{
