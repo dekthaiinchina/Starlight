@@ -135,6 +135,7 @@ const MusicPlay: ServiceExecute = {
 					} else {
 						player.queue.add(res.playlist.tracks)
 					}
+					if (!player.playing) await player.play();
 				}
 				break;
 			case "track":
@@ -239,9 +240,9 @@ const MusicPlay: ServiceExecute = {
 						},
 					],
 				});
-				if (!player.queue || !player.queue.current) {
+				if (!player.queue || !player.queue.current || !player.playing) {
 					await player.play()
-				}
+				};
 				break;
 			}
 		}

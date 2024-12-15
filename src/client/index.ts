@@ -5,14 +5,17 @@ import { customLogger } from "./structures/utils/Logger";
 export const client = new Starlight();
 Logger.customize(customLogger);
 client.start().then(() => {
-	client.uploadCommands().then(() => {
-		client.logger.info("Commands uploaded");
-	}).catch((err: Error) => {
-		client.logger.error(err.message);
-	});
-	//client.redis.connect();
+    client.services.watchServices()
+        .then(() => client.logger.info("Watching services for changes"))
+        .catch(error => client.logger.error("Failed to watch services:", error));
+    client.uploadCommands().then(() => {
+        client.logger.info("Commands uploaded");
+    }).catch((err: Error) => {
+        client.logger.error(err.message);
+    });
+    //client.redis.connect();
 }).catch((err) => {
-	client.logger.error(err);
+    client.logger.error(err);
 });
 process.on("unhandledRejection", (reason, promise) => {
     (async () => {

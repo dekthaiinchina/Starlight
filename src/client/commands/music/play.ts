@@ -40,7 +40,7 @@ export const PlayCommandOptions = {
 					.respond([
 						{
 							name: "No results found",
-							value: "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+							value: song
 						}
 					])
 					.then(() => {})
