@@ -88,7 +88,7 @@ export async function ErrorRequest(ctx: AnyContext, error: Error) {
         embeds: [
             {
                 color: 0xff0000,
-                title: "An error occurred while executing the command. Contact the Discord Support [here](https://discord.gg/AquariumQStudio)",
+                title: "An error occurred while executing the command. Contact the Discord Support [here](https://discord.gg/WEQGD5U9SQ)",
                 author: {
                     name: `Error Code: ${(error).name || "Unknown"}`,
                     icon_url: ctx.client.me.avatarURL(),

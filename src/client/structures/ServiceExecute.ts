@@ -32,13 +32,9 @@ export class ServiceLoader {
     private loadedFiles: Set<string> = new Set();
     private debounceTimers: Map<string, NodeJS.Timeout> = new Map();
 
-    constructor(private client: Starlight) {
-        this.watchServices()
-            .then(() => this.client.logger.info("Watching services for changes"))
-            .catch(error => this.client.logger.error("Failed to watch services:", error));
-    }
+    constructor(private client: Starlight) {}
 
-    private async watchServices(): Promise<void> {
+    public async watchServices(): Promise<void> {
         const servicesDir = path.join(__dirname, "../service");
         try {
             const watcher = fs.watch(servicesDir, { recursive: true });
