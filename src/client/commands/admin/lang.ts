@@ -1,7 +1,5 @@
 import { ErrorRequest } from "@/client/structures/utils/Client";
-import { Options } from "seyfert";
-import { createStringOption } from "seyfert";
-import { Declare, Command, type CommandContext } from "seyfert";
+import { Options, createStringOption, Declare, Command, type CommandContext } from "seyfert";
 
 export const LangCommandOptions = {
 	language: createStringOption({

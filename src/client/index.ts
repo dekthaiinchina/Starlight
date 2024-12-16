@@ -13,20 +13,15 @@ client.start().then(() => {
     }).catch((err: Error) => {
         client.logger.error(err.message);
     });
-    //client.redis.connect();
 }).catch((err) => {
     client.logger.error(err);
 });
 process.on("unhandledRejection", (reason, promise) => {
     (async () => {
-        try {
-            const result = await promise;
-            client.logger.error(`Unhandled Rejection at: ${JSON.stringify(result)} reason: ${String(reason)}`);
-        } catch (err: unknown) {
-            client.logger.error(`Unhandled Rejection at: ${String(promise)} reason: ${String(reason)}`);
-        }
-    })().catch((err: unknown) => {
-        client.logger.error(`Error in unhandledRejection handler: ${String(err)}`);
+        const result = await promise;
+        client.logger.error(`Unhandled Rejection at: ${JSON.stringify(result)} reason: ${JSON.stringify(reason)}`);
+    })().catch((err: Error) => {
+        client.logger.error(`Error in unhandledRejection handler: ${err}`);
     });
 });
 

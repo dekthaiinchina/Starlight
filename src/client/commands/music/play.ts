@@ -17,17 +17,14 @@ export const PlayCommandOptions = {
 				name: string;
 				value: string;
 			}[] = [];
-			switch (res.loadType) {
-				case "search":
-					for (const track of res.tracks) {
-						songs.push({
-							name: track.title,
-							value: track.title,
-						});
-					}
-					break;
-				default:
-					break;
+			if (res.loadType === "search") {
+				for (let i = 0; i < res.tracks.length; i++) {
+					const track = res.tracks[i];
+					songs.push({
+						name: track.title,
+						value: track.track,
+					});
+				}
 			}
 			if (songs.length > 0) {
 				await interaction
