@@ -1,6 +1,5 @@
-import { ActionRow, CommandContext, StringSelectMenu, SelectMenuInteraction, UsingClient, Message } from "seyfert";
+import { ActionRow, CommandContext, StringSelectMenu, SelectMenuInteraction, UsingClient, Message, Embed } from "seyfert";
 import { IDatabase } from "@/client/interfaces/IDatabase";
-import { Embed } from "seyfert";
 import os from "os";
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
 

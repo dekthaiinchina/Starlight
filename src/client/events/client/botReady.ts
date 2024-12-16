@@ -16,7 +16,7 @@ export default createEvent({
 		client.cluster.maintenance = false;
 		client.sakulink.init(user.id);
 		setInterval(() => {
-			return async () => {
+			async () => {
 				const guilds = client.cache.guilds.count();
 				const players = client.sakulink.players.size;
 				return await client.gateway.setPresence({

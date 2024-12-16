@@ -16,64 +16,63 @@ const LangCommand: ServiceExecute = {
 			if (database.lang === lang) {
 				return interaction.editOrReply({
 					content: `${t.lang.already.get()}`,
-				}) as unknown as void; // Ensure it's cast to void
+				}) as unknown as void;
+			}
+			const existingGuild = await client.prisma.guild.findFirst({ where: { id: interaction.guildId } });
+			if (existingGuild) {
+				await client.prisma.guild
+					.update({
+						where: {
+							uuid: database.uuid,
+							id: interaction.guildId,
+						},
+						data: {
+							id: interaction.guildId,
+							lang: lang,
+						},
+						select: {
+							id: true,
+							name: true,
+							lang: true,
+							room: true,
+							uuid: true,
+							roomid: true,
+						},
+					})
+					.then(async (data) => {
+						await client.redis.set(`guild:${client.me.id}:${data.id}`, JSON.stringify(data));
+						interaction.editOrReply({
+							content: `${t.lang.success.get()}: ${data.lang}`,
+						}).then().catch(console.error);
+						return void 0;
+					});
 			} else {
-				if (await client.prisma.guild.findFirst({ where: { id: interaction.guildId } })) {
-					await client.prisma.guild
-						.update({
-							where: {
-								uuid: database.uuid,
-								id: interaction.guildId,
-							},
-							data: {
-								id: interaction.guildId,
-								lang: lang,
-							},
-							select: {
-								id: true,
-								name: true,
-								lang: true,
-								room: true,
-								uuid: true,
-								roomid: true,
-							},
-						})
-						.then(async (data) => {
-							await client.redis.set(`guild:${client.me.id}:${data.id}`, JSON.stringify(data));
-							interaction.editOrReply({
-								content: `${t.lang.success.get()}: ${data.lang}`,
-							}).then().catch(console.error);
-							return void 0;
-						});
-				} else {
-					await client.prisma.guild
-						.create({
-							data: {
-								id: interaction.guildId,
-								lang: lang,
-								name: interaction.guild.name,
-								room: { create: { id: "" } },
-								ai: { create: { name: "", channel: "" } },
-							},
-							select: {
-								uuid: true,
-								roomid: true,
-								lang: true,
-								id: true,
-								name: true,
-							},
-						})
-						.then(async (data) => {
-							await client.redis.set(`guild:${client.me.id}:${data.id}`, JSON.stringify(data));
-							interaction.editOrReply({
-								content: `${t.lang.success.get()}: ${data.lang}`,
-							}).then().catch(console.error);
-							return void 0;
-						});
-				}
+				await client.prisma.guild
+					.create({
+						data: {
+							id: interaction.guildId,
+							lang: lang,
+							name: interaction.guild.name,
+							room: { create: { id: "" } },
+							ai: { create: { name: "", channel: "" } },
+						},
+						select: {
+							uuid: true,
+							roomid: true,
+							lang: true,
+							id: true,
+							name: true,
+						},
+					})
+					.then(async (data) => {
+						await client.redis.set(`guild:${client.me.id}:${data.id}`, JSON.stringify(data));
+						interaction.editOrReply({
+							content: `${t.lang.success.get()}: ${data.lang}`,
+						}).then().catch(console.error);
+						return void 0;
+					});
 			}
 		}
-		return void 0;
 	},
 };
 

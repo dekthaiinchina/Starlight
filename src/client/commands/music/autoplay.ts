@@ -33,7 +33,7 @@ export default class AutoPlayCommand extends Command {
 					content: "There is no player in this guild.",
 				});
 			} else {
-				if (ctx.options.type === "true") {
+				if (ctx.options.type) {
 					player.setAutoplay(true);
 					return ctx.editOrReply({
 						content: "AutoPlay has been enabled.",

@@ -1,6 +1,5 @@
 import { IDatabase } from "@/client/interfaces/IDatabase";
-import { AnyContext } from "seyfert";
-import { UsingClient } from "seyfert";
+import { UsingClient, AnyContext } from "seyfert";
 import { ActivityType, GatewayActivityUpdateData } from "seyfert/lib/types";
 
 // Function to update the bot's status periodically
@@ -20,10 +19,10 @@ export function UpdateStatus(client: UsingClient) {
                 }),
             }),
         ).then((d) => {
-			return d
-		}).catch((e) => {
-			client.logger.error("UpdateStatus Error:" + e);
-		});
+            return d
+        }).catch((e) => {
+            client.logger.error("UpdateStatus Error:" + e);
+        });
     }, 1000 * 5);
 }
 
@@ -73,15 +72,6 @@ export async function ClearCache(client: UsingClient) {
     }));
 }
 
-// Activities for the bot to display
-export const BOT_ACTIVITIES: GatewayActivityUpdateData[] = [
-    { name: "with {users} users. 🎧", type: ActivityType.Listening },
-    { name: "in {guilds} guilds. ❤️", type: ActivityType.Streaming },
-    { name: "with {users} users. 👤", type: ActivityType.Playing },
-    { name: "{players} players. 🌐", type: ActivityType.Watching },
-];
-
-// Error handling function
 export async function ErrorRequest(ctx: AnyContext, error: Error) {
     ctx.client.logger.error(error);
     return ctx.interaction.editOrReply({
