@@ -3,7 +3,7 @@ import config from "./config";
 import "dotenv/config";
 
 const manager = new ClusterManager(`${__dirname}/client/index.js`, {
-	totalShards: "auto",
+	totalShards: 10,
 	shardsPerClusters: 5,
 	totalClusters: "auto",
 	mode: "worker",
