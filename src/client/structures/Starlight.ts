@@ -43,7 +43,6 @@ export class Starlight extends Client {
 			autoMove: true,
 			autoResume: true,
 			autoPlay: true,
-			sorter: (nodes) => nodes,
 			send: (id, payload) => {
 				this.guilds.fetch(id).then(guild => {
 					if (!guild) return;
