@@ -20,9 +20,9 @@ export class Starlight extends Client {
 	constructor() {
 		super({
 			shards: {
-				start: getInfo().FIRST_SHARD_ID,
-				end: getInfo().SHARD_LIST.length,
-			},
+                start: getInfo().SHARD_LIST[0],
+                end: getInfo().SHARD_LIST[4],
+            },
 			commands: {
 				defaults: {
 					onAfterRun(context, error: Error) {
@@ -35,6 +35,7 @@ export class Starlight extends Client {
 				},
 			}
 		});
+
 		this.cluster = new ClusterClient(this);
 		this.sonatica = new Sonatica({
 			nodes: config.Lavalink,
