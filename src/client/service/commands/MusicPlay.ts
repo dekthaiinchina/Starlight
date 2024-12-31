@@ -3,7 +3,7 @@ import { PlayCommandOptions } from "@/client/commands/music/play";
 import { IDatabase } from "@/client/interfaces/IDatabase";
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
 import config from '@/config';
-import { Node, Player, SearchResult } from 'sakulink';
+import { Node, Player, SearchResult } from 'sonatica';
 import { ChannelType } from 'seyfert/lib/types';
 
 type Voice = BaseChannel<ChannelType> | DMChannel | CategoryChannel;
@@ -20,12 +20,13 @@ const MusicPlay: ServiceExecute = {
 		const voice = await client.cache.voiceStates?.get(member.id, guildId)?.channel();
 		if (!isValidVoiceChannel(voice, interaction, t)) return;
 		const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
-		const selectedNode = client.sakulink.nodes.get(node);
-		node = getNode(client, selectedNode, node);
-		let player = client.sakulink.players.get(interaction.guildId);
+		if (!node) {
+			node = client.sonatica.nodes.first().options.identifier;
+		}
+		let player = client.sonatica.players.get(interaction.guildId);
 		if (!isSameVoiceChannel(bot, voice, interaction, t)) return;
 		player = getPlayer(client, player, interaction, voice, channelId, node);
-		const res = await client.sakulink.search({ query: query, source: "youtube" });
+		const res = await client.sonatica.search({ query: query, source: "youtube" });
 		await handleSearchResult(client, player, res, interaction, t, query);
 	},
 };
@@ -45,13 +46,6 @@ function isValidVoiceChannel(voice: Voice, interaction: CommandContext<typeof Pl
 	return true;
 }
 
-function getNode(client: UsingClient, selectedNode: Node, node: string): string {
-	if (!selectedNode || selectedNode.socket?.readyState !== WebSocket.OPEN) {
-		node = client.sakulink.nodes.filter(n => n.socket?.readyState === WebSocket.OPEN).random().options.identifier;
-	}
-	return node;
-}
-
 function isSameVoiceChannel(bot: VoiceState, voice: Voice, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>): boolean {
 	if (bot && bot.channelId !== voice.id) {
 		interaction.editOrReply({
@@ -69,7 +63,7 @@ function isSameVoiceChannel(bot: VoiceState, voice: Voice, interaction: CommandC
 
 function getPlayer(client: UsingClient, player: Player, interaction: CommandContext<typeof PlayCommandOptions>, voice: Voice, channelId: string, node: string): Player {
 	if (!player) {
-		player = client.sakulink.create({
+		player = client.sonatica.create({
 			guild: interaction.guildId,
 			selfDeafen: true,
 			selfMute: false,
@@ -237,7 +231,7 @@ async function handleSearch(player: Player, res: SearchResult, interaction: Comm
 		return;
 	}
 	const track = res.tracks[0];
-	if (!track || !track.title || !track.displayThumbnail) {
+	if (!track || !track.title || !track.thumbnail) {
 		console.error("Track or its properties are missing:", track);
 		await interaction.editOrReply({ content: "Track information is missing." });
 		return;

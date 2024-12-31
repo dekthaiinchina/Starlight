@@ -1,10 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
 import { Starlight } from "./Starlight";
-import { Node, Player, Track, TrackExceptionEvent, TrackStuckEvent, WebSocketClosedEvent } from "sakulink";
+import { Node, Player, Track, } from "sonatica";
 import { CommandContext } from "seyfert";
 import { IDatabase } from "../interfaces/IDatabase";
 import { $Enums } from "@prisma/client";
+import { TrackExceptionEvent, TrackStuckEvent, WebSocketClosedEvent } from "sonatica/@dist/types/Op";
 
 type ServiceType = 'commands' | 'services' | 'player';
 
@@ -72,7 +73,7 @@ export class ServiceLoader {
                 if (service.filePath === filePath) {
                     serviceMap.delete(name);
                     if (type === 'player' && 'execute' in service && this.isValidManagerEvent(service.name)) {
-                        this.client.sakulink.off(service.name, service.execute as EventListenerMap[typeof service.name]);
+                        this.client.sonatica.off(service.name, service.execute as EventListenerMap[typeof service.name]);
                     }
                     return Promise.resolve();
                 }
@@ -194,8 +195,7 @@ export class ServiceLoader {
 					if (this.isValidManagerEvent(eventName)) {
 						const listener = service.execute.bind(service, this.client) as EventListenerMap[typeof eventName];
 						// This line may still need an @ts-expect-error directive if there's a mismatch
-						// @ts-expect-error This is necessary because the event name may not match the expected types.
-						this.client.sakulink.on(eventName, listener);
+						this.client.sonatica.on(eventName, listener);
 					} else {
 						 
 						this.client.logger.warn(`Invalid event name: ${String(eventName)}`);

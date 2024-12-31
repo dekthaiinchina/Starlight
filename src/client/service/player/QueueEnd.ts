@@ -1,6 +1,6 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Player } from "sakulink";
+import { Player } from "sonatica";
 
 const QueueEnd: PlayerExecute = {
 	name: "queueEnd",

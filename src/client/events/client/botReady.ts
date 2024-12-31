@@ -13,8 +13,7 @@ export default createEvent({
             return totalMembers;
         }
         client.logger.info(`${user.username} is ready ${(process.memoryUsage().heapTotal / 1024 / 1024).toFixed(2)}MB | Guild: ${client.cache.guilds.count()} | User: ${users()}`);
-        client.cluster.maintenance = false;
-        client.sakulink.init(user.id);
+        client.sonatica.init(user.id);
         client.logger.info(`[System] Language Data: ${JSON.stringify(client.langs.values)}`);
         return UpdateStatus(client);
     },

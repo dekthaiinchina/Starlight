@@ -27,7 +27,7 @@ export const AutoPlayCommandOptions = {
 export default class AutoPlayCommand extends Command {
 	async run(ctx: CommandContext<typeof AutoPlayCommandOptions>) {
 		try {
-			const player = ctx.client.sakulink.players.get(ctx.guildId);
+			const player = ctx.client.sonatica.players.get(ctx.guildId);
 			if (!player) {
 				return ctx.editOrReply({
 					content: "There is no player in this guild.",

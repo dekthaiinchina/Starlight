@@ -1,6 +1,6 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Node } from "sakulink";
+import { Node } from "sonatica";
 
 const NodeError: PlayerExecute = {
 	name: "nodeError",

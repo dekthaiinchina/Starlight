@@ -1,6 +1,6 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Track, Player } from "sakulink";
+import { Track, Player } from "sonatica";
 
 export const TrackStuck: PlayerExecute = {
 	name: "trackStuck",

@@ -2,7 +2,7 @@ import config from "../../config";
 import { Client } from "seyfert";
 import { PrismaClient } from "@prisma/client";
 import { ServiceLoader } from "./ServiceExecute";
-import { Manager } from "sakulink";
+import { Sonatica } from "sonatica";
 import { ErrorRequest } from "./utils/Client";
 import { Redis } from "ioredis";
 import { ClusterClient, getInfo } from "discord-hybrid-sharding";
@@ -10,7 +10,7 @@ import { StringCacheAdapter } from "./utils/StringCacheAdapter";
 
 export class Starlight extends Client {
 	public redis: Redis;
-	public sakulink: Manager;
+	public sonatica: Sonatica;
 	public prisma: PrismaClient;
 	public services: ServiceLoader;
 	public cluster: ClusterClient<this>;
@@ -36,12 +36,13 @@ export class Starlight extends Client {
 			}
 		});
 		this.cluster = new ClusterClient(this);
-		this.sakulink = new Manager({
+		this.sonatica = new Sonatica({
 			nodes: config.Lavalink,
 			shards: this.cluster.info.TOTAL_SHARDS,
 			autoMove: true,
 			autoResume: true,
 			autoPlay: true,
+			sorter: (nodes) => nodes,
 			send: (id, payload) => {
 				this.guilds.fetch(id).then(guild => {
 					if (!guild) return;

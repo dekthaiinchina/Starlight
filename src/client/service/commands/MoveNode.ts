@@ -13,7 +13,7 @@ const MoveNode: ServiceExecute = {
 			const t = client.t(database.lang);
 			const voice = await client.cache.voiceStates?.get(member.id, interaction.guildId)?.channel();
 			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
-			const player = client.sakulink.players.get(interaction.guildId);
+			const player = client.sonatica.players.get(interaction.guildId);
 			if (!player) {
 				await interaction.editOrReply({
 					content: `Error: Not Found`,

@@ -10,7 +10,7 @@ export const MoveNodeCommandOptions = {
 			const nodes: {
 				name: string;
 				value: string;
-			}[] = interaction.client.sakulink.nodes.map((node) => ({
+			}[] = interaction.client.sonatica.nodes.map((node) => ({
 				name: `${node.options.identifier} - ${node.stats.players} Players`,
 				value: node.options.identifier,
 			}));
