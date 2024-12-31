@@ -2,7 +2,7 @@
   "name": "@starlight/client",
   "module": "src/cluster.ts",
   "main": "dist/cluster.js",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": "EvarinDev",
   "license": "Apache-2.0",
   "scripts": {
@@ -20,7 +20,7 @@
     "@types/ws": "^8.5.13",
     "eslint": "^9.17.0",
     "globals": "^15.13.0",
-    "typescript-eslint": "^8.18.0",
+    "typescript-eslint": "^8.18.1",
     "@dep-tree/cli": "^0.23.0"
   },
   "peerDependencies": {
@@ -36,7 +36,7 @@
     "ioredis": "^5.4.1",
     "ms": "^2.1.3",
     "redis": "^4.7.0",
-    "sakulink": "^1.2.11",
-    "seyfert": "^2.1.0"
+    "seyfert": "^2.1.0",
+    "sonatica": "^1.1.6"
   }
 }

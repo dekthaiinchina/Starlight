@@ -10,7 +10,7 @@ const StopCommand: ServiceExecute = {
 		try {
 			const member = interaction.member;
 			const t = client.t(database.lang);
-			const player = client.sakulink.players.get(interaction.guildId);
+			const player = client.sonatica.players.get(interaction.guildId);
 			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
 			const voice = await client.cache.voiceStates?.get(member.id, interaction.guildId)?.channel();
 			if (!player) {

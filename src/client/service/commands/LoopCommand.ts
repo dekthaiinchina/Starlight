@@ -10,7 +10,7 @@ const LoopCommand: ServiceExecute = {
 	filePath: __filename,
 	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof LoopCommandOptions>): Promise<void> {
 		try {
-			const player = client.sakulink.players.get(interaction.guildId);
+			const player = client.sonatica.players.get(interaction.guildId);
 			if (!player) {
 				interaction.editOrReply({
 					embeds: [new Embed().setColor("Red").setDescription("There is no song currently playing.")],
@@ -32,13 +32,13 @@ const LoopCommand: ServiceExecute = {
 			}
 			switch (type) {
 				case "song": {
-					player.setTrackRepeat(true);
+					player.setRepeat(1);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
-								.setDescription(`Song loop has been successfully turned ${player.trackRepeat ? "on" : "off"}`)
+								.setDescription(`Song loop has been successfully turned on`)
 								.setImage(config.config.ads_image)
 								.addFields([
 									{
@@ -53,13 +53,13 @@ const LoopCommand: ServiceExecute = {
 					return
 				}
 				case "queue": {
-					player.setQueueRepeat(true);
+					player.setRepeat(2);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
-								.setDescription(`${player.queueRepeat ? "on" : "off"} Queue loop complete`)
+								.setDescription(`On Queue loop complete`)
 								.setImage(config.config.ads_image)
 								.addFields([
 									{
@@ -74,8 +74,7 @@ const LoopCommand: ServiceExecute = {
 					return
 				}
 				case "off": {
-					player.setTrackRepeat(false);
-					player.setQueueRepeat(false);
+					player.setRepeat(0);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [

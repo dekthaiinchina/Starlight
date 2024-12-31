@@ -5,45 +5,6 @@ export const PlayCommandOptions = {
 	search: createStringOption({
 		description: "[EN]: The song you want to play | [TH]: เพลงที่คุณต้องการเล่น",
 		required: true,
-		autocomplete: async (interaction: AutocompleteInteraction) => {
-			const { client } = interaction;
-			const song = interaction.getInput();
-			const res = await client.sakulink.search({
-				query: song || "Song",
-				source: "youtube",
-			});
-
-			const songs: {
-				name: string;
-				value: string;
-			}[] = [];
-			if (res.loadType === "search") {
-				for (let i = 0; i < res.tracks.length; i++) {
-					const track = res.tracks[i];
-					songs.push({
-						name: track.title,
-						value: track.track,
-					});
-				}
-			}
-			if (songs.length > 0) {
-				await interaction
-					.respond(songs)
-					.then(() => {})
-					.catch(() => {});
-				songs.pop();
-			} else {
-				await interaction
-					.respond([
-						{
-							name: "No results found",
-							value: song
-						}
-					])
-					.then(() => {})
-					.catch(() => {});
-			}
-		},
 	}),
 	node: createStringOption({
 		description: "[EN]: The node you want to play the song | [TH]: โหนดที่คุณต้องการเล่นเพลง",
@@ -52,11 +13,11 @@ export const PlayCommandOptions = {
 			const nodes: {
 				name: string;
 				value: string;
-			}[] = interaction.client.sakulink.nodes.map((node) => ({
+			}[] = interaction.client.sonatica.nodes.map((node) => ({
 				name: `${node.options.identifier} - ${node.stats.players} Players`,
 				value: node.options.identifier,
 			}));
-			return await interaction.respond(nodes).catch(() => {});
+			return await interaction.respond(nodes).catch(() => { });
 		},
 	}),
 };

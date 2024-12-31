@@ -1,6 +1,6 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Player } from "sakulink";
+import { Player } from "sonatica";
 
 export const PlayerDisconnect: PlayerExecute = {
 	name: "playerDisconnect",

@@ -24,7 +24,6 @@
   - [Installing](#installing)
 - [⛏️ Built Using ](#️-built-using-)
 - [✍️ Authors ](#️-authors-)
-- [💖Ads](#ads)
 - [Star History](#star-history)
 
 ## 🧐 About <a name = "about"></a>
@@ -63,17 +62,13 @@ bun run dev
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Prisma](https://www.prisma.io/) - Database toolkit
 - [Seyfert](https://www.seyfert.dev/) - Discord framework
-- [Sakulink](https://sakulink.jirayu.net/) - Lavalink wrapper
+- [sonatica](https://sonatica.jirayu.net/) - Lavalink wrapper
 - [Bun](https://bun.sh/) - JavaScript runtime
 
 ## ✍️ Authors <a name = "authors"></a>
 
 - [@EvarinDev](https://github.com/EvarinDev) - Idea & Initial work
 See also the list of [contributors](https://github.com/EvarinDev/Starlight/contributors) who participated in this project.
-
-## 💖Ads
-Rinthong Server: https://discord.gg/rinthong
-<img src="https://cdn.faystarnext.studio/RinthongAds.png" />
 
 ## Star History
 
