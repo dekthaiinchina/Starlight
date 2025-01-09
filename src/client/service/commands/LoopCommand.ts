@@ -60,7 +60,7 @@ const LoopCommand: ServiceExecute = {
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
-								.setDescription(t.loop.loop_off.get())
+								.setDescription(t.loop.loop_queue.get())
 								.setImage(config.config.ads_image)
 								.addFields([
 									{
