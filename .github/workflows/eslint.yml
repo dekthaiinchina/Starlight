@@ -19,11 +19,7 @@ jobs:
 
       - name: Install ESLint and Dependencies
         run: |
-          npm install eslint@8.51.0
-          npm install @typescript-eslint/eslint-plugin@6.7.4
-          npm install @typescript-eslint/parser@6.7.4
-          npm install @microsoft/eslint-formatter-sarif
-
+          npm install eslint@8.51.0 @typescript-eslint/eslint-plugin@6.7.4 @typescript-eslint/parser@6.7.4 @microsoft/eslint-formatter-sarif --force
       - name: Run ESLint
         run: |
           mkdir -p reports
