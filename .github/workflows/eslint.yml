@@ -23,11 +23,11 @@ jobs:
       - name: Run ESLint
         run: |
           mkdir -p reports
-          npx eslint . \
+          npx eslint src/**/*.ts \
             --config ./eslint.config.js \
-            --ext .ts \
             -f @microsoft/eslint-formatter-sarif \
-            -o ./reports/eslint-results.sarif
+            -o ./reports/eslint-results.sarif \
+            --ignore-path .gitignore
 
       - name: Upload SARIF file
         uses: github/codeql-action/upload-sarif@v2
