@@ -145,11 +145,9 @@ const Botinfo: ServiceExecute = {
                 });
             });
 
-            collector.run('end', async () => {
-                await (m as Message).edit({
-                    components: [],
-                }).then().catch(() => { });
-            });
+            setTimeout(() => {
+                collector.stop();
+            }, 60_000);
         } catch (error) {
             console.error(error);
             await interaction.editOrReply({

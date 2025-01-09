@@ -46,15 +46,14 @@ const SkipCommand: ServiceExecute = {
 				}).then().catch(console.error);
 				return;
 			}
-			player.stop();
-			interaction.editOrReply({
+			player.stop().then(async () => await interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
 						description: t.music.skip.get(),
 					},
 				],
-			}).then().catch(console.error);
+			}).then().catch(console.error)).catch(console.error);
 			return;
 		} catch (error) {
 			console.error(error);

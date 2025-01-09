@@ -39,17 +39,16 @@ const StopCommand: ServiceExecute = {
 						},
 					],
 				});
-				return;
+				return
 			}
-			player.destroy();
-			await interaction.editOrReply({
+			player.destroy().then(async () => await interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
 						description: t.music.stop.get(),
 					},
 				],
-			});
+			})).catch(console.log);
 		} catch (error) {
 			console.error(error);
 		}

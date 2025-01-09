@@ -41,15 +41,14 @@ const ResumeCommand: ServiceExecute = {
 				}).then().catch(console.error);
 				return;
 			}
-			player.pause(false);
-			interaction.editOrReply({
+			player.pause(false).then(() => interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
 						description: t.music.resume.get(),
 					},
 				],
-			}).then().catch(console.error);
+			}).then().catch(console.error)).catch(console.error);
 			return
 		} catch (error) {
 			console.error((error as Error).message);

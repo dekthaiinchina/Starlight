@@ -59,7 +59,6 @@ export class Starlight extends Client {
 			},
 			cache: {
 				disabledCache: {
-					threads: true,
 					overwrites: true,
 					emojis: true,
 					messages: true,

@@ -1,107 +1,147 @@
-import { __InternalParseLocale, BaseChannel, CategoryChannel, CommandContext, DefaultLocale, DMChannel, UsingClient, VoiceState } from 'seyfert';
+import { __InternalParseLocale, BaseChannel, CategoryChannel, CommandContext, DefaultLocale, DMChannel, UsingClient } from 'seyfert';
 import { PlayCommandOptions } from "@/client/commands/music/play";
 import { IDatabase } from "@/client/interfaces/IDatabase";
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
 import config from '@/config';
-import { Node, Player, SearchResult } from 'sonatica';
+import { Player, SearchResult } from 'sonatica';
 import { ChannelType } from 'seyfert/lib/types';
 
 type Voice = BaseChannel<ChannelType> | DMChannel | CategoryChannel;
 
+interface BotVoiceState {
+    channelId: string;
+}
+
 const MusicPlay: ServiceExecute = {
-	name: "MusicPlay",
-	type: "commands",
-	filePath: __filename,
-	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof PlayCommandOptions>): Promise<void> {
-		const { guildId, channelId, member } = interaction;
-		const t = client.t(database.lang);
-		const query = interaction.options["search"];
-		let node = interaction.options["node"];
-		const voice = await client.cache.voiceStates?.get(member.id, guildId)?.channel();
-		if (!isValidVoiceChannel(voice, interaction, t)) return;
-		const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
-		if (!node) {
-			node = client.sonatica.nodes.first().options.identifier;
-		}
-		let player = client.sonatica.players.get(interaction.guildId);
-		if (!isSameVoiceChannel(bot, voice, interaction, t)) return;
-		player = getPlayer(client, player, interaction, voice, channelId, node);
-		const res = await client.sonatica.search({ query: query, source: "youtube" });
-		await handleSearchResult(client, player, res, interaction, t, query);
-	},
+    name: "MusicPlay",
+    type: "commands",
+    filePath: __filename,
+    async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof PlayCommandOptions>): Promise<void> {
+        const { guildId, channelId, member } = interaction;
+        const t = client.t(database.lang);
+        const query = interaction.options["search"];
+        let node: string = interaction.options["node"];
+        
+        try {
+            const voice = await client.cache.voiceStates?.get(member.id, guildId)?.channel();
+            if (!isValidVoiceChannel(voice)) {
+                await sendInvalidVoiceChannelMessage(interaction, t);
+                return;
+            }
+
+            const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId) as BotVoiceState | undefined;
+            if (!node) {
+                node = client.sonatica.nodes.first().options.identifier;
+            }
+
+            let player = client.sonatica.players.get(interaction.guildId);
+            if (!isSameVoiceChannel(bot, voice)) {
+                await sendInvalidVoiceChannelMessage(interaction, t);
+                return;
+            }
+
+            player = getPlayer(client, player, interaction, voice, channelId, node);
+            const res = await client.sonatica.search({ query: query, source: "youtube" });
+            await handleSearchResult(client, player, res, interaction, t, query);
+        } catch (error: unknown) {
+			// eslint-disable-next-line @typescript-eslint/no-base-to-string
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            try {
+                await interaction.editOrReply({
+                    content: `An error occurred: ${errorMessage}`,
+                });
+            } catch (err) {
+                client.logger.error(`Failed to send error message: ${err instanceof Error ? err.message : 'Unknown error'}`);
+            }
+        }
+    },
 };
 
-function isValidVoiceChannel(voice: Voice, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>): boolean {
-	if (!voice?.is(["GuildVoice", "GuildStageVoice"])) {
-		interaction.editOrReply({
-			embeds: [
-				{
-					color: 0xff0000,
-					description: t.play.not_join_voice_channel.get(),
-				},
-			],
-		}).then().catch(console.error);
-		return false;
-	}
-	return true;
+function isValidVoiceChannel(voice: Voice | null): boolean {
+    return voice?.is(["GuildVoice", "GuildStageVoice"]) ?? false;
 }
 
-function isSameVoiceChannel(bot: VoiceState, voice: Voice, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>): boolean {
-	if (bot && bot.channelId !== voice.id) {
-		interaction.editOrReply({
-			embeds: [
-				{
-					color: 0xff0000,
-					description: t.play.not_same_voice_channel.get(),
-				},
-			],
-		}).then().catch(console.error);
-		return false;
-	}
-	return true;
+function isSameVoiceChannel(bot: BotVoiceState | undefined, voice: Voice): boolean {
+    return !bot || bot.channelId === voice.id;
 }
 
-function getPlayer(client: UsingClient, player: Player, interaction: CommandContext<typeof PlayCommandOptions>, voice: Voice, channelId: string, node: string): Player {
-	if (!player) {
-		player = client.sonatica.create({
-			guild: interaction.guildId,
-			selfDeafen: true,
-			selfMute: false,
-			voiceChannel: voice.id,
-			textChannel: channelId,
-			node: node,
-		});
-	}
-
-	if (player.state !== "CONNECTED") player.connect();
-	return player;
+async function sendInvalidVoiceChannelMessage(interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>): Promise<void> {
+    try {
+        await interaction.editOrReply({
+            embeds: [{
+                color: 0xff0000,
+                description: t.play.not_join_voice_channel.get(),
+            }],
+        });
+    } catch (err) {
+        interaction.client.logger.error(`Failed to send invalid voice channel message: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
 }
 
-async function handleSearchResult(client: UsingClient, player: Player, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, query: string): Promise<void> {
-	switch (res.loadType) {
-		case "error":
-			await handleError(player, res, interaction, client);
-			break;
-		case "empty":
-			await handleEmpty(player, interaction, t, query);
-			break;
-		case "playlist":
-			await handlePlaylist(player, res, interaction, t, client);
-			break;
-		case "track":
-			await handleTrack(player, res, interaction, t, client);
-			break;
-		case "search":
-			await handleSearch(player, res, interaction, t, client);
-			break;
-		default:
-			if (!player.queue.current || !player) player.destroy();
-			break;
-	}
+function getPlayer(client: UsingClient, player: Player | null, interaction: CommandContext<typeof PlayCommandOptions>, voice: Voice, channelId: string, node: string): Player {
+    if (!player) {
+        player = client.sonatica.create({
+            guild: interaction.guildId,
+            selfDeafen: true,
+            selfMute: false,
+            voiceChannel: voice.id,
+            textChannel: channelId,
+            node: node,
+        });
+    }
+
+    if (player.state !== "CONNECTED") {
+        try {
+            player.connect();
+        } catch (err) {
+            client.logger.error(`Failed to connect player: ${err instanceof Error ? err.message : 'Unknown error'}`);
+        }
+    }
+    return player;
+}
+
+async function handleSearchResult(
+    client: UsingClient,
+    player: Player,
+    res: SearchResult,
+    interaction: CommandContext<typeof PlayCommandOptions>,
+    t: __InternalParseLocale<DefaultLocale>,
+    query: string
+): Promise<void> {
+    try {
+        switch (res.loadType) {
+            case "error":
+                await handleError(player, res, interaction, client);
+                break;
+            case "empty":
+                await handleEmpty(player, interaction, t, query);
+                break;
+            case "playlist":
+                await handlePlaylist(player, res, interaction, t, client);
+                break;
+            case "track":
+                await handleTrack(player, res, interaction, t, client);
+                break;
+            case "search":
+                await handleSearch(player, res, interaction, t, client);
+                break;
+            default:
+                if (!player.queue.current || !player) {
+                    try {
+                        await player.destroy();
+                    } catch (err) {
+                        client.logger.error(`Failed to destroy player: ${err instanceof Error ? err.message : 'Unknown error'}`);
+                    }
+                }
+                break;
+        }
+    } catch (err) {
+        client.logger.error(`Failed to handle search result: ${err instanceof Error ? err.message : 'Unknown error'}`);
+    }
 }
 
 async function handleError(player: Player, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, client: UsingClient): Promise<void> {
-	if (!player || !player.queue.current) player.destroy();
+	if (!player || !player.queue.current) player.destroy().then().catch(console.error);
 	await interaction.editOrReply({
 		embeds: [
 			{
@@ -113,18 +153,18 @@ async function handleError(player: Player, res: SearchResult, interaction: Comma
 				description: `\`\`\`json\n${JSON.stringify(res, null, "  ")}\`\`\``,
 			},
 		],
-	});
+	}).then().catch(console.error);
 }
 
 async function handleEmpty(player: Player, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, query: string): Promise<void> {
-	if (!player || !player.queue.current) player.destroy();
+	if (!player || !player.queue.current) player.destroy().then().catch(console.error);
 	const emptyEmbedJson = {
 		color: 0xff0000,
 		description: `\`\`\`${t.play.search_404.get()} ${query}\`\`\``,
 	};
 	await interaction.editOrReply({
 		embeds: [emptyEmbedJson],
-	});
+	}).then().catch(console.error);
 }
 
 async function handlePlaylist(player: Player, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, client: UsingClient): Promise<void> {

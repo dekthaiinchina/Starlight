@@ -1,6 +1,5 @@
 import { UpdateStatus } from "@/client/structures/utils/Client";
 import { createEvent } from "seyfert";
-import { ActivityType, PresenceUpdateStatus } from "seyfert/lib/types";
 
 export default createEvent({
     data: { once: true, name: "botReady" },
