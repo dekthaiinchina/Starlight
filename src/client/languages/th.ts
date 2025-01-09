@@ -24,4 +24,11 @@ export default {
 		time: "ระยะเวลา",
 		pause: "หยุดชั่วคราวแล้วนะ",
 	},
+	loop: {
+		not_playing: "ไม่มีเพลงที่กําลังเล่นอยู่นะ",
+		specify_type: "กรุณาระบุประเภทของวนนะ",
+		loop_song: "วนเพลงแล้วนะ",
+		loop_queue: "วนคิวแล้วนะ",
+		loop_off: "ปิดวนรายการแล้วนะ",
+	}
 } satisfies typeof English; // inherit types from default lang to ensure 1:1 locales

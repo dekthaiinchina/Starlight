@@ -10,10 +10,11 @@ const LoopCommand: ServiceExecute = {
 	filePath: __filename,
 	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof LoopCommandOptions>): Promise<void> {
 		try {
+			const t = client.t(database.lang);
 			const player = client.sonatica.players.get(interaction.guildId);
 			if (!player) {
 				interaction.editOrReply({
-					embeds: [new Embed().setColor("Red").setDescription("There is no song currently playing.")],
+					embeds: [new Embed().setColor("Red").setDescription(t.loop.not_playing.get())],
 				}).then().catch(console.error);
 				return
 			}
@@ -24,7 +25,7 @@ const LoopCommand: ServiceExecute = {
 					embeds: [
 						{
 							color: 0xff0000,
-							description: "Please specify a loop type.",
+							description: t.loop.specify_type.get(),
 						},
 					],
 				}).then().catch(console.error);
@@ -38,7 +39,7 @@ const LoopCommand: ServiceExecute = {
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
-								.setDescription(`Song loop has been successfully turned on`)
+								.setDescription(t.loop.loop_song.get())
 								.setImage(config.config.ads_image)
 								.addFields([
 									{
@@ -59,7 +60,7 @@ const LoopCommand: ServiceExecute = {
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
-								.setDescription(`On Queue loop complete`)
+								.setDescription(t.loop.loop_queue.get())
 								.setImage(config.config.ads_image)
 								.addFields([
 									{
@@ -80,7 +81,7 @@ const LoopCommand: ServiceExecute = {
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
-								.setDescription(`Loop closed successfully.`)
+								.setDescription(t.loop.loop_off.get())
 								.setImage(config.config.ads_image)
 								.addFields([
 									{
