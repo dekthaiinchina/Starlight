@@ -1,6 +1,5 @@
 import { IDatabase } from "@/client/interfaces/IDatabase";
 import { UsingClient, AnyContext } from "seyfert";
-import { ActivityType, GatewayActivityUpdateData } from "seyfert/lib/types";
 
 // Function to update the bot's status periodically
 export function UpdateStatus(client: UsingClient) {

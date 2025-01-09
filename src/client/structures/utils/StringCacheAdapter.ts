@@ -1,4 +1,5 @@
 import { Adapter } from "seyfert";
+import { Awaitable } from "seyfert/lib/common";
 
 export interface MemoryAdapterOptions<T> {
     encode(data: unknown): T;
@@ -22,6 +23,20 @@ export class StringCacheAdapter implements Adapter {
             },
         },
     ) {}
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    bulkPatch(keyValue: [string, any][]): Awaitable<void> {
+        keyValue.forEach(([key, value]) => {
+            if (this.storage.has(key)) {
+                this.storage.set(key, this.options.encode(value));
+            }
+        });
+    }
+    // eslint-disable-next-line  @typescript-eslint/no-explicit-any
+    patch(id: string, data: any): Awaitable<void> {
+        if (this.storage.has(id)) {
+            this.storage.set(id, this.options.encode(data));
+        }
+    }
 
     start() {}
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -48,30 +63,16 @@ export class StringCacheAdapter implements Adapter {
         this.storage.set(key, this.options.encode(data));
     }
 
-    bulkPatch(updateOnly: boolean, entries: [string, unknown][]) {
-        entries.forEach(([key, value]) => {
-            if (updateOnly && !this.storage.has(key)) return;
-            const oldData = this.get(key);
-            this.storage.set(
-                key,
-                this.options.encode({
-                    ...(typeof oldData === 'object' && oldData !== null ? oldData : {}),
-                    ...(typeof value === 'object' && value !== null ? value : {}),
-                })
-            );
-        });
+    bulkUpdate(entries: [string, unknown][]) {
+        entries.forEach(([key, value]) => this.updateOnly(key, value));
+    }
+    private updateOnly(key: string, data: unknown) {
+        if (!this.storage.has(key)) return;
+        this.storage.set(key, this.options.encode(data));
     }
 
-    patch(updateOnly: boolean, key: string, data: unknown) {
-        if (updateOnly && !this.storage.has(key)) return;
-        const oldData = this.get(key);
-        this.storage.set(
-            key,
-            this.options.encode({
-                ...(typeof oldData === 'object' && oldData !== null ? oldData : {}),
-                ...(typeof data === 'object' && data !== null ? data : {}),
-            })
-        );
+    update(key: string, data: unknown) {
+        this.updateOnly(key, data);
     }
 
     values(to: string): unknown[] {

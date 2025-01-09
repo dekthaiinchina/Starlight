@@ -3,7 +3,7 @@ import { IDatabase } from "@/client/interfaces/IDatabase";
 import { VolumeCommandOptions } from "@/client/commands/music/volume";
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
 
-const VolumeCommand: ServiceExecute ={
+const VolumeCommand: ServiceExecute = {
 	name: "VolumeCommand",
 	type: "commands",
 	filePath: __filename,
@@ -29,22 +29,21 @@ const VolumeCommand: ServiceExecute ={
 							description: t.play.not_join_voice_channel.get(),
 						},
 					],
-				}).then().catch(console.error);
+				}).catch(err => client.logger.error(`Failed to send not_join_voice_channel message: ${err}`));
 				return;
 			}
 			if (bot && bot.channelId !== voice.id) {
-				interaction.editOrReply({
+				await interaction.editOrReply({
 					embeds: [
 						{
 							color: 0xff0000,
 							description: t.play.not_same_voice_channel.get(),
 						},
 					],
-				}).then().catch(console.error);
-				return
+				}).catch(err => client.logger.error(`Failed to send not_same_voice_channel message: ${err}`));
+				return;
 			}
-			player.setVolume(percent);
-			await interaction.editOrReply({
+			player.setVolume(percent).then(async () => await interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
@@ -52,8 +51,7 @@ const VolumeCommand: ServiceExecute ={
 						timestamp: new Date().toISOString(),
 					},
 				],
-			});
-			return
+			}).catch(err => client.logger.error(`Failed to send volume update message: ${err}`))).catch(console.log); 
 		} catch (error) {
 			interaction.editOrReply({
 				content: (error as Error).message,
