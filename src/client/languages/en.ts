@@ -22,4 +22,11 @@ export default {
 		time: "Time",
 		pause: "Paused",
 	},
+	loop: {
+		not_playing: "There is no song currently playing.",
+		specify_type: "Please specify a loop type.",
+		loop_song: "Song loop has been successfully turnned on.",
+		loop_queue: "On Queue loop complete",
+		loop_off: "Loop closed successfully.",
+	}
 };
