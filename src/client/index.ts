@@ -1,7 +1,6 @@
 import { Logger } from "seyfert";
 import { Starlight } from "./structures/Starlight";
 import { customLogger } from "./structures/utils/Logger";
-import { getInfo } from "discord-hybrid-sharding";
 
 export const client = new Starlight();
 Logger.customize(customLogger);
