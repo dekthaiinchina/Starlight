@@ -6,7 +6,6 @@ import { getInfo } from "discord-hybrid-sharding";
 export const client = new Starlight();
 Logger.customize(customLogger);
 client.start().then(() => {
-    console.log(getInfo().SHARD_LIST)
     client.services.watchServices()
         .then(() => client.logger.info("Watching services for changes"))
         .catch(error => client.logger.error("Failed to watch services:", error));
