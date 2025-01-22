@@ -20,9 +20,10 @@ export class Starlight extends Client {
 	constructor() {
 		super({
 			shards: {
-                start: getInfo().SHARD_LIST[0],
-                end: getInfo().SHARD_LIST.length - 1,
-            },
+				start: getInfo().FIRST_SHARD_ID,
+				end: getInfo().SHARD_LIST.length,
+				total: getInfo().TOTAL_SHARDS,
+			},
 			commands: {
 				defaults: {
 					onAfterRun(context, error: Error) {
