@@ -62,7 +62,7 @@ bun run dev
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Prisma](https://www.prisma.io/) - Database toolkit
 - [Seyfert](https://www.seyfert.dev/) - Discord framework
-- [sonatica](https://sonatica.jirayu.net/) - Lavalink wrapper
+- [Sonatica](https://sonatica.jirayu.net/) - Lavalink wrapper
 - [Bun](https://bun.sh/) - JavaScript runtime
 
 ## ✍️ Authors <a name = "authors"></a>
