@@ -12,7 +12,7 @@ const FiltersCommmand: ServiceExecute = {
     async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof FiltersCommandOptions>): Promise<void> {
         const player: LithiumXPlayer = client.lithiumx.players.get(interaction.guildId);
         const filter = interaction.options.filter
-        let mode = interaction.options.mode as boolean;
+        let mode = interaction.options.mode;
         if (typeof mode === "undefined") mode = true;
         const t = client.t(database.lang);
         console.log(interaction.options)

@@ -60,7 +60,7 @@ export class ServiceLoader {
             }
         }, delay);
 
-        this.debounceTimers.set(filePath, timer as NodeJS.Timeout);
+        this.debounceTimers.set(filePath, timer);
     }
 
     private unloadFile(filePath: string): Promise<void> {
