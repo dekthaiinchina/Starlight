@@ -8,6 +8,7 @@ export const TrackEnd: PlayerExecute = {
     execute(client: UsingClient, player: LithiumXPlayer, track: Track, reason: { reason: string }): Promise<void> {
         if (["STOPPED", "REPLACED"].includes(reason.reason)) return;
         if (player.trackRepeat || player.queueRepeat) return;
+        if (!player.queue.current) return Promise.resolve(player.destroy()).then(() => null).catch(() => null);
         if (player.queue.length > 0) return;
         return Promise.resolve(
             player.destroy()
