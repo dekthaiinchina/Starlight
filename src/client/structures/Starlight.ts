@@ -2,28 +2,20 @@ import config from "../../config";
 import { Client } from "seyfert";
 import { PrismaClient } from "@prisma/client";
 import { ServiceLoader } from "./ServiceExecute";
-import { Sonatica } from "sonatica";
 import { ErrorRequest } from "./utils/Client";
 import { Redis } from "ioredis";
-import { ClusterClient, getInfo } from "discord-hybrid-sharding";
-import { StringCacheAdapter } from "./utils/StringCacheAdapter";
-
-export class Starlight extends Client {
+import { LithiumXManager } from "lithiumx";
+import { ClusterClient } from "./utils/cluster/ClusterClient";
+export class Starlight extends ClusterClient {
 	public redis: Redis;
-	public sonatica: Sonatica;
+	public lithiumx: LithiumXManager;
 	public prisma: PrismaClient;
 	public services: ServiceLoader;
-	public cluster: ClusterClient<this>;
 	public get uptime(): number {
 		return process.uptime() * 1000;
 	}
 	constructor() {
 		super({
-			shards: {
-				start: getInfo().FIRST_SHARD_ID,
-				end: getInfo().SHARD_LIST.length,
-				total: getInfo().TOTAL_SHARDS,
-			},
 			commands: {
 				defaults: {
 					onAfterRun(context, error: Error) {
@@ -36,23 +28,23 @@ export class Starlight extends Client {
 				},
 			}
 		});
-
-		this.cluster = new ClusterClient(this);
-		this.sonatica = new Sonatica({
+		this.lithiumx = new LithiumXManager({
 			nodes: config.Lavalink,
-			shards: this.cluster.info.TOTAL_SHARDS,
-			autoMove: true,
-			autoResume: true,
 			autoPlay: true,
-			send: (id, payload) => {
-				this.guilds.fetch(id).then(guild => {
+			caches: {
+				enabled: true,
+				time: 60000,
+			},
+			shards: this.workerData.workerId,
+            send: async (id, payload) => {
+                this.guilds.fetch(id).then(async guild => {
 					if (!guild) return;
-					const shardId = this.gateway.calculateShardId(guild.id);
-					this.gateway.send(shardId, payload);
+					const shard = (await this.guilds.fetch(id)).shard
+                    shard.send(false, JSON.parse(JSON.stringify(payload)))
 				}).catch((error: Error) => {
 					this.logger.error(`Failed to send payload: ${error.message}`);
 				});
-			},
+            }
 		});
 		this.setServices({
 			langs: {
@@ -69,11 +61,15 @@ export class Starlight extends Client {
 					stageInstances: true,
 					channels: true,
 				},
-				adapter: new StringCacheAdapter()
 			},
 		});
 		this.redis = new Redis(config.REDIS)
 		this.prisma = new PrismaClient();
+		this.prisma.$connect().then(() => {
+			this.logger.info("[System] Prisma connected");
+		}).catch((error: Error) => {
+			this.logger.error(`[System] Prisma error: ${error.message}`);
+		});
 		this.services = new ServiceLoader(this);
 		this.services.load().then(() => {
 			this.logger.info(`[System] Services loaded`);
