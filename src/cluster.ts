@@ -33,12 +33,23 @@ const manager = new IWorkerManager({
 	},
 });
 
-manager.on("ClusterCreate", (cluster) => {
-	Array.from({ length: cluster.shardStart + cluster.totalShards - 1 }).forEach((shardId: number) => {
-		log.info(`Shard ${shardId} spawned`);
-		cluster.getShardInfo(shardId).then((info) => log.debug(`Shard ${shardId} | Cluster ${info.workerId} | Ready: ${info.open}`));
+process.on("unhandledRejection", (reason, promise) => {
+	(async () => {
+		const result = await promise;
+		log.error(`Unhandled Rejection at: ${JSON.stringify(result)} reason: ${JSON.stringify(reason)}`);
+	})().catch((err: Error) => {
+		log.error(`Error in unhandledRejection handler: ${err}`);
 	});
 });
+
+process.on("uncaughtException", (err: Error) => {
+	log.error(`Uncaught Exception: ${err.message}`);
+});
+
+process.on("uncaughtExceptionMonitor", (err: Error) => {
+	log.error(`Uncaught Exception Monitor: ${err.message}`);
+})
+
 manager.on("Debug", (debug) => log.debug(debug));
 manager.start()
 	.then(() => log.info("All clusters spawned"))
