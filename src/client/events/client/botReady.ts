@@ -12,7 +12,6 @@ export default createEvent({
             return totalMembers;
         }
         client.logger.info(`${user.username} is ready ${(process.memoryUsage().heapTotal / 1024 / 1024).toFixed(2)}MB | Guild: ${client.cache.guilds.count()} | User: ${users()}`);
-        client.lithiumx.init(user.id);
         client.logger.info(`[System] Language Data: ${JSON.stringify(client.langs.values)}`);
         UpdateStatus(client);
         Array.from(client.cache.guilds.values()).forEach(async (guild) => {

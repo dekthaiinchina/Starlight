@@ -2,6 +2,9 @@ import { Logger } from "seyfert";
 import { Starlight } from "./structures/Starlight";
 import { customLogger } from "./structures/utils/Logger";
 
+export const client = new Starlight();
+Logger.customize(customLogger);
+
 process.on("unhandledRejection", (reason, promise) => {
     (async () => {
         const result = await promise;
@@ -19,8 +22,6 @@ process.on("uncaughtExceptionMonitor", (err: Error) => {
     client.logger.error(`Uncaught Exception Monitor: ${err.message}`);
 })
 
-export const client = new Starlight();
-Logger.customize(customLogger);
 client.start().then(() => {
     client.services.watchServices()
         .then(() => client.logger.info("Watching services for changes"))
