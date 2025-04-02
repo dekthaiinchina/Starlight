@@ -35,6 +35,8 @@ const LoopCommand: ServiceExecute = {
 				case "song": {
 					player.setTrackRepeat(true);
 					player.setQueueRepeat(false);
+					player.setTrackRepeat(true);
+					player.setQueueRepeat(false);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [
@@ -57,6 +59,8 @@ const LoopCommand: ServiceExecute = {
 				case "queue": {
 					player.setTrackRepeat(false);
 					player.setQueueRepeat(true);
+					player.setTrackRepeat(false);
+					player.setQueueRepeat(true);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [
@@ -77,6 +81,8 @@ const LoopCommand: ServiceExecute = {
 					return
 				}
 				case "off": {
+					player.setTrackRepeat(false);
+					player.setQueueRepeat(false);
 					player.setTrackRepeat(false);
 					player.setQueueRepeat(false);
 					interaction.editOrReply({
@@ -104,6 +110,6 @@ const LoopCommand: ServiceExecute = {
 			await interaction.editOrReply({ content: (err as Error).message }).then().catch(console.error);
 			return;
 		}
-	},
+	}
 };
 export default LoopCommand;

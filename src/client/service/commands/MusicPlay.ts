@@ -3,145 +3,145 @@ import { PlayCommandOptions } from "@/client/commands/music/play";
 import { IDatabase } from "@/client/interfaces/IDatabase";
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
 import config from '@/config';
-import { Player, SearchResult } from 'sonatica';
+import { LithiumXPlayer, SearchResult } from 'lithiumx';
 import { ChannelType } from 'seyfert/lib/types';
 
 type Voice = BaseChannel<ChannelType> | DMChannel | CategoryChannel;
 
 interface BotVoiceState {
-    channelId: string;
+	channelId: string;
 }
 
 const MusicPlay: ServiceExecute = {
-    name: "MusicPlay",
-    type: "commands",
-    filePath: __filename,
-    async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof PlayCommandOptions>): Promise<void> {
-        const { guildId, channelId, member } = interaction;
-        const t = client.t(database.lang);
-        const query = interaction.options["search"];
-        let node: string = interaction.options["node"];
-        
-        try {
-            const voice = await client.cache.voiceStates?.get(member.id, guildId)?.channel();
-            if (!isValidVoiceChannel(voice)) {
-                await sendInvalidVoiceChannelMessage(interaction, t);
-                return;
-            }
+	name: "MusicPlay",
+	type: "commands",
+	filePath: __filename,
+	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof PlayCommandOptions>): Promise<void> {
+		const { guildId, channelId, member } = interaction;
+		const t = client.t(database.lang);
+		const query = interaction.options["search"];
+		let node: string = interaction.options["node"];
 
-            const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId) as BotVoiceState | undefined;
-            if (!node) {
-                node = client.sonatica.nodes.first().options.identifier;
-            }
+		try {
+			const voice = await client.cache.voiceStates?.get(member.id, guildId)?.channel();
+			if (!isValidVoiceChannel(voice)) {
+				await sendInvalidVoiceChannelMessage(interaction, t);
+				return;
+			}
 
-            let player = client.sonatica.players.get(interaction.guildId);
-            if (!isSameVoiceChannel(bot, voice)) {
-                await sendInvalidVoiceChannelMessage(interaction, t);
-                return;
-            }
+			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId) as BotVoiceState | undefined;
+			if (!node) {
+				node = client.lithiumx.nodes.first().options.identifier;
+			}
 
-            player = getPlayer(client, player, interaction, voice, channelId, node);
-            const res = await client.sonatica.search({ query: query, source: "youtube" });
-            await handleSearchResult(client, player, res, interaction, t, query);
-        } catch (error: unknown) {
+			let player = client.lithiumx.players.get(interaction.guildId);
+			if (!isSameVoiceChannel(bot, voice)) {
+				await sendInvalidVoiceChannelMessage(interaction, t);
+				return;
+			}
+
+			player = getPlayer(client, player, interaction, voice, channelId, node);
+			const res = await client.lithiumx.search({ query: query, source: "youtube" });
+			await handleSearchResult(client, player, res, interaction, t, query);
+		} catch (error: unknown) {
 			// eslint-disable-next-line @typescript-eslint/no-base-to-string
-            const errorMessage = error instanceof Error ? error.message : String(error);
-            try {
-                await interaction.editOrReply({
-                    content: `An error occurred: ${errorMessage}`,
-                });
-            } catch (err) {
-                client.logger.error(`Failed to send error message: ${err instanceof Error ? err.message : 'Unknown error'}`);
-            }
-        }
-    },
+			const errorMessage = error instanceof Error ? error.message : String(error);
+			try {
+				await interaction.editOrReply({
+					content: `An error occurred: ${errorMessage}`,
+				});
+			} catch (err) {
+				client.logger.error(`Failed to send error message: ${err instanceof Error ? err.message : 'Unknown error'}`);
+			}
+		}
+	},
 };
 
 function isValidVoiceChannel(voice: Voice | null): boolean {
-    return voice?.is(["GuildVoice", "GuildStageVoice"]) ?? false;
+	return voice?.is(["GuildVoice", "GuildStageVoice"]) ?? false;
 }
 
 function isSameVoiceChannel(bot: BotVoiceState | undefined, voice: Voice): boolean {
-    return !bot || bot.channelId === voice.id;
+	return !bot || bot.channelId === voice.id;
 }
 
 async function sendInvalidVoiceChannelMessage(interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>): Promise<void> {
-    try {
-        await interaction.editOrReply({
-            embeds: [{
-                color: 0xff0000,
-                description: t.play.not_join_voice_channel.get(),
-            }],
-        });
-    } catch (err) {
-        interaction.client.logger.error(`Failed to send invalid voice channel message: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    }
+	try {
+		await interaction.editOrReply({
+			embeds: [{
+				color: 0xff0000,
+				description: t.play.not_join_voice_channel.get(),
+			}],
+		});
+	} catch (err) {
+		interaction.client.logger.error(`Failed to send invalid voice channel message: ${err instanceof Error ? err.message : 'Unknown error'}`);
+	}
 }
 
-function getPlayer(client: UsingClient, player: Player | null, interaction: CommandContext<typeof PlayCommandOptions>, voice: Voice, channelId: string, node: string): Player {
-    if (!player) {
-        player = client.sonatica.create({
-            guild: interaction.guildId,
-            selfDeafen: true,
-            selfMute: false,
-            voiceChannel: voice.id,
-            textChannel: channelId,
-            node: node,
-        });
-    }
+function getPlayer(client: UsingClient, player: LithiumXPlayer | null, interaction: CommandContext<typeof PlayCommandOptions>, voice: Voice, channelId: string, node: string): LithiumXPlayer {
+	if (!player) {
+		player = client.lithiumx.create({
+			guild: interaction.guildId,
+			selfDeafen: true,
+			selfMute: false,
+			voiceChannel: voice.id,
+			textChannel: channelId,
+			node: node,
+		});
+	}
 
-    if (player.state !== "CONNECTED") {
-        try {
-            player.connect();
-        } catch (err) {
-            client.logger.error(`Failed to connect player: ${err instanceof Error ? err.message : 'Unknown error'}`);
-        }
-    }
-    return player;
+	if (player.state !== "CONNECTED") {
+		try {
+			player.connect();
+		} catch (err) {
+			client.logger.error(`Failed to connect player: ${err instanceof Error ? err.message : 'Unknown error'}`);
+		}
+	}
+	return player;
 }
 
 async function handleSearchResult(
-    client: UsingClient,
-    player: Player,
-    res: SearchResult,
-    interaction: CommandContext<typeof PlayCommandOptions>,
-    t: __InternalParseLocale<DefaultLocale>,
-    query: string
+	client: UsingClient,
+	player: LithiumXPlayer,
+	res: SearchResult,
+	interaction: CommandContext<typeof PlayCommandOptions>,
+	t: __InternalParseLocale<DefaultLocale>,
+	query: string
 ): Promise<void> {
-    try {
-        switch (res.loadType) {
-            case "error":
-                await handleError(player, res, interaction, client);
-                break;
-            case "empty":
-                await handleEmpty(player, interaction, t, query);
-                break;
-            case "playlist":
-                await handlePlaylist(player, res, interaction, t, client);
-                break;
-            case "track":
-                await handleTrack(player, res, interaction, t, client);
-                break;
-            case "search":
-                await handleSearch(player, res, interaction, t, client);
-                break;
-            default:
-                if (!player.queue.current || !player) {
-                    try {
-                        await player.destroy();
-                    } catch (err) {
-                        client.logger.error(`Failed to destroy player: ${err instanceof Error ? err.message : 'Unknown error'}`);
-                    }
-                }
-                break;
-        }
-    } catch (err) {
-        client.logger.error(`Failed to handle search result: ${err instanceof Error ? err.message : 'Unknown error'}`);
-    }
+	try {
+		switch (res.loadType) {
+			case "error":
+				await handleError(player, res, interaction, client);
+				break;
+			case "empty":
+				await handleEmpty(player, interaction, t, query);
+				break;
+			case "playlist":
+				await handlePlaylist(player, res, interaction, t, client);
+				break;
+			case "track":
+				await handleTrack(player, res, interaction, t, client);
+				break;
+			case "search":
+				await handleSearch(player, res, interaction, t, client);
+				break;
+			default:
+				if (!player.queue.current || !player) {
+					try {
+						await player.destroy();
+					} catch (err) {
+						client.logger.error(`Failed to destroy player: ${err instanceof Error ? err.message : 'Unknown error'}`);
+					}
+				}
+				break;
+		}
+	} catch (err) {
+		client.logger.error(`Failed to handle search result: ${err instanceof Error ? err.message : 'Unknown error'}`);
+	}
 }
 
-async function handleError(player: Player, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, client: UsingClient): Promise<void> {
-	if (!player || !player.queue.current) player.destroy().then().catch(console.error);
+async function handleError(player: LithiumXPlayer, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, client: UsingClient): Promise<void> {
+	if (!player || !player.queue.current) player.destroy();
 	await interaction.editOrReply({
 		embeds: [
 			{
@@ -156,8 +156,8 @@ async function handleError(player: Player, res: SearchResult, interaction: Comma
 	}).then().catch(console.error);
 }
 
-async function handleEmpty(player: Player, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, query: string): Promise<void> {
-	if (!player || !player.queue.current) player.destroy().then().catch(console.error);
+async function handleEmpty(player: LithiumXPlayer, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, query: string): Promise<void> {
+	if (!player || !player.queue.current) player.destroy();
 	const emptyEmbedJson = {
 		color: 0xff0000,
 		description: `\`\`\`${t.play.search_404.get()} ${query}\`\`\``,
@@ -167,7 +167,7 @@ async function handleEmpty(player: Player, interaction: CommandContext<typeof Pl
 	}).then().catch(console.error);
 }
 
-async function handlePlaylist(player: Player, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, client: UsingClient): Promise<void> {
+async function handlePlaylist(player: LithiumXPlayer, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, client: UsingClient): Promise<void> {
 	const playlist = res.playlist;
 	await interaction.editOrReply({
 		components: [config.config.ads_component || undefined],
@@ -216,7 +216,7 @@ async function handlePlaylist(player: Player, res: SearchResult, interaction: Co
 	if (!player.playing) await player.play();
 }
 
-async function handleTrack(player: Player, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, client: UsingClient): Promise<void> {
+async function handleTrack(player: LithiumXPlayer, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, client: UsingClient): Promise<void> {
 	const track = res.tracks[0];
 	await interaction.editOrReply({
 		components: [config.config.ads_component || undefined],
@@ -264,7 +264,7 @@ async function handleTrack(player: Player, res: SearchResult, interaction: Comma
 	}
 }
 
-async function handleSearch(player: Player, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, client: UsingClient): Promise<void> {
+async function handleSearch(player: LithiumXPlayer, res: SearchResult, interaction: CommandContext<typeof PlayCommandOptions>, t: __InternalParseLocale<DefaultLocale>, client: UsingClient): Promise<void> {
 	if (!res.tracks || !res.tracks.length) {
 		console.error("No tracks found in response:", res);
 		await interaction.editOrReply({ content: "No tracks were found." });

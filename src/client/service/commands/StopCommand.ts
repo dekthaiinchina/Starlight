@@ -10,7 +10,7 @@ const StopCommand: ServiceExecute = {
 		try {
 			const member = interaction.member;
 			const t = client.t(database.lang);
-			const player = client.sonatica.players.get(interaction.guildId);
+			const player = client.lithiumx.players.get(interaction.guildId);
 			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
 			const voice = await client.cache.voiceStates?.get(member.id, interaction.guildId)?.channel();
 			if (!player) {
@@ -41,14 +41,15 @@ const StopCommand: ServiceExecute = {
 				});
 				return
 			}
-			player.destroy().then(async () => await interaction.editOrReply({
+			player.destroy()
+			await interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
 						description: t.music.stop.get(),
 					},
 				],
-			})).catch(console.log);
+			}).then().catch(console.error);
 		} catch (error) {
 			console.error(error);
 		}

@@ -10,7 +10,7 @@ const ResumeCommand: ServiceExecute = {
 		try {
 			const member = interaction.member;
 			const t = client.t(database.lang);
-			const player = client.sonatica.players.get(interaction.guildId);
+			const player = client.lithiumx.players.get(interaction.guildId);
 			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
 			const voice = await client.cache.voiceStates?.get(member.id, interaction.guildId)?.channel();
 			if (!player) {
@@ -41,14 +41,15 @@ const ResumeCommand: ServiceExecute = {
 				}).then().catch(console.error);
 				return;
 			}
-			player.pause(false).then(() => interaction.editOrReply({
+			player.pause(false)
+			interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
 						description: t.music.resume.get(),
 					},
 				],
-			}).then().catch(console.error)).catch(console.error);
+			}).then().catch(console.error)
 			return
 		} catch (error) {
 			console.error((error as Error).message);

@@ -1,11 +1,10 @@
 import fs from "fs/promises";
 import path from "path";
 import { Starlight } from "./Starlight";
-import { Node, Player, Track, } from "sonatica";
+import { LithiumXNode, LithiumXPlayer, ManagerEvents, Track, } from "lithiumx";
 import { CommandContext } from "seyfert";
 import { IDatabase } from "../interfaces/IDatabase";
 import { $Enums } from "@prisma/client";
-import { TrackExceptionEvent, TrackStuckEvent, WebSocketClosedEvent } from "sonatica/@dist/types/Op";
 
 type ServiceType = 'commands' | 'services' | 'player';
 
@@ -21,7 +20,7 @@ export interface ServiceExecute extends BaseService {
 
 export interface PlayerExecute extends BaseService {
     type: 'player';
-    name: keyof EventListenerMap;
+    name: keyof ManagerEvents;
 }
 
 export class ServiceLoader {
@@ -33,7 +32,7 @@ export class ServiceLoader {
     private loadedFiles: Set<string> = new Set();
     private debounceTimers: Map<string, NodeJS.Timeout> = new Map();
 
-    constructor(private client: Starlight) {}
+    constructor(private client: Starlight) { }
 
     public async watchServices(): Promise<void> {
         const servicesDir = path.join(__dirname, "../service");
@@ -61,7 +60,7 @@ export class ServiceLoader {
             }
         }, delay);
 
-        this.debounceTimers.set(filePath, timer as NodeJS.Timeout);
+        this.debounceTimers.set(filePath, timer);
     }
 
     private unloadFile(filePath: string): Promise<void> {
@@ -73,7 +72,7 @@ export class ServiceLoader {
                 if (service.filePath === filePath) {
                     serviceMap.delete(name);
                     if (type === 'player' && 'execute' in service && this.isValidManagerEvent(service.name)) {
-                        this.client.sonatica.off(service.name, service.execute as EventListenerMap[typeof service.name]);
+                        this.client.lithiumx.off(service.name, service.execute as ManagerEvents[typeof service.name]);
                     }
                     return Promise.resolve();
                 }
@@ -178,45 +177,45 @@ export class ServiceLoader {
         return Array.from(this.services.values()).reduce((total, map) => total + map.size, 0);
     }
 
-	private async loadFile(filePath: string): Promise<void> {
-		try {
-			delete require.cache[require.resolve(filePath)];
-			const importedModule = await import(filePath).then().catch(console.error) as { default: BaseService };
-			const service = importedModule.default;
-			service.filePath = filePath;
-	
-			const type = this.getServiceType(filePath);
-			const serviceMap = this.services.get(type);
-			if (serviceMap) {
-				serviceMap.set(service.name, service);
-	
-				if (type === 'player' && 'execute' in service) {
-					const eventName = service.name as keyof EventListenerMap;
-					if (this.isValidManagerEvent(eventName)) {
-						const listener = service.execute.bind(service, this.client) as EventListenerMap[typeof eventName];
-						// This line may still need an @ts-expect-error directive if there's a mismatch
-						this.client.sonatica.on(eventName, listener);
-					} else {
-						 
-						this.client.logger.warn(`Invalid event name: ${String(eventName)}`);
-					}
-				}
-	
-				this.loadedFiles.add(filePath);
-				return this.client.logger.debug(`Loaded ${type} service: ${service.name}`);
-			}
-		} catch (error) {
-			return this.client.logger.error(`Failed to load file: ${filePath}`, error);
-		}
-	}
-	
-	private isValidManagerEvent(eventName: string): eventName is keyof EventListenerMap {
-		return ['nodeCreate', 'nodeDestroy', 'nodeConnect', 'nodeReconnect',
-			'nodeDisconnect', 'nodeError', 'nodeRaw', 'playerCreate',
-			'playerDestroy', 'queueEnd', 'playerMove', 'playerDisconnect',
-			'trackStart', 'trackEnd', 'trackStuck', 'trackError', 'socketClosed']
-			.includes(eventName);
-	}
+    private async loadFile(filePath: string): Promise<void> {
+        try {
+            delete require.cache[require.resolve(filePath)];
+            const importedModule = await import(filePath).then().catch(console.error) as { default: BaseService };
+            const service = importedModule.default;
+            service.filePath = filePath;
+
+            const type = this.getServiceType(filePath);
+            const serviceMap = this.services.get(type);
+            if (serviceMap) {
+                serviceMap.set(service.name, service);
+
+                if (type === 'player' && 'execute' in service) {
+                    const eventName = service.name as keyof ManagerEvents;
+                    if (this.isValidManagerEvent(eventName)) {
+                        const listener = service.execute.bind(service, this.client) as ManagerEvents[typeof eventName];
+                        // This line may still need an @ts-expect-error directive if there's a mismatch
+                        this.client.lithiumx.on(eventName, listener);
+                    } else {
+
+                        this.client.logger.warn(`Invalid event name: ${String(eventName)}`);
+                    }
+                }
+
+                this.loadedFiles.add(filePath);
+                return this.client.logger.debug(`Loaded ${type} service: ${service.name}`);
+            }
+        } catch (error) {
+            return this.client.logger.error(`Failed to load file: ${filePath}`, error);
+        }
+    }
+
+    private isValidManagerEvent(eventName: string): eventName is keyof ManagerEvents {
+        return ['NodeCreate', 'NodeDestroy', 'NodeConnect', 'NodeReconnect',
+            'NodeDisconnect', 'NodeError', 'NodeRaw', 'PlayerCreate',
+            'PlayerDestroy', 'QueueEnd', 'PlayerMove', 'PlayerDisconnect',
+            'TrackStart', 'TrackEnd', 'TrackStuck', 'TrackError', 'SocketClosed']
+            .includes(eventName);
+    }
 
     private getServiceType(filePath: string): ServiceType {
         const folderName = path.basename(path.dirname(filePath));
@@ -229,23 +228,3 @@ export class ServiceLoader {
         }
     }
 }
-
-type EventListenerMap = {
-    nodeCreate?: (node?: Node) => void;
-    nodeDestroy?: (node?: Node) => void;
-    nodeConnect?: (node?: Node) => void;
-    nodeReconnect?: (node?: Node) => void;
-    nodeDisconnect?: (node?: Node, reason?: { code?: number; reason?: string }) => void;
-    nodeError?: (node?: Node, error?: Error) => void;
-    nodeRaw?: (node?: Node, data?: string) => void;
-    playerCreate?: (player?: Player) => void;
-    playerDestroy?: (player?: Player) => void;
-    queueEnd?: (player?: Player) => void;
-    playerMove?: (player?: Player, newPosition?: number) => void;
-    playerDisconnect?: (player?: Player) => void;
-    trackStart?: (player?: Player, track?: Track) => void;
-    trackEnd?: (player?: Player, track?: Track) => void;
-    trackStuck?: (player?: Player, track?: Track, payload?: TrackStuckEvent) => void;
-    trackError?: (player?: Player, track?: Track, payload?: TrackExceptionEvent) => void;
-    socketClosed?: (player?: Player, payload?: WebSocketClosedEvent) => void;
-};

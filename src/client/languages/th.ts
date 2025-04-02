@@ -30,5 +30,13 @@ export default {
 		loop_song: "วนเพลงแล้วนะ",
 		loop_queue: "วนคิวแล้วนะ",
 		loop_off: "ปิดวนรายการแล้วนะ",
+	},
+	filter: {
+		specify_filter: "กรุณาระบุตัวกรอง",
+		filter_not_found: "ไม่พบตัวกรองนะ",
+		filter_already: "ตัวกรองนี้เปิดอยู่แล้วนะ",
+		filter_cleared: "ล้างตัวกรองแล้วนะ",
+		filter_success: (name) => `เปิดตัวกรอง ${name} แล้วนะ`,
+		filter_removed: (name) => `ปิดตัวกรอง ${name} แล้วนะ`,
 	}
 } satisfies typeof English; // inherit types from default lang to ensure 1:1 locales

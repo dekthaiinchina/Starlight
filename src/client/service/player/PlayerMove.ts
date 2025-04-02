@@ -1,11 +1,11 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Player } from "sonatica";
+import { LithiumXPlayer } from "lithiumx";
 
 const PlayerMove: PlayerExecute = {
-	name: "playerMove",
+	name: "PlayerMove",
 	type: "player",
-	async execute(client: UsingClient, player: Player, oldChannel: string, newChannel: string) {
+	async execute(client: UsingClient, player: LithiumXPlayer, oldChannel: string, newChannel: string) {
 		return Promise.resolve().then(() => client.logger.info(`Player moved from ${oldChannel} to ${newChannel} on ${player.guild}`));
 	},
 };

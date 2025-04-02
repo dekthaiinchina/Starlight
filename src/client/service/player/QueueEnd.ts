@@ -1,11 +1,11 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Player } from "sonatica";
+import { LithiumXPlayer } from "lithiumx";
 
 const QueueEnd: PlayerExecute = {
-	name: "queueEnd",
+	name: "QueueEnd",
 	type: "player",
-	execute(client: UsingClient, player: Player): Promise<void> {
+	execute(client: UsingClient, player: LithiumXPlayer): Promise<void> {
 		return Promise.resolve(
 			player.destroy()
 		).then(() => {

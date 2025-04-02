@@ -13,7 +13,7 @@ export const PlayCommandOptions = {
 			const nodes: {
 				name: string;
 				value: string;
-			}[] = interaction.client.sonatica.nodes.map((node) => ({
+			}[] = interaction.client.lithiumx.nodes.map((node) => ({
 				name: `${node.options.identifier} - ${node.stats.players} Players`,
 				value: node.options.identifier,
 			}));

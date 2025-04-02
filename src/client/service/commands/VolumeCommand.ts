@@ -12,7 +12,7 @@ const VolumeCommand: ServiceExecute = {
 			const percent = interaction.options.percent;
 			const member = interaction.member;
 			const t = client.t(database.lang);
-			const player = client.sonatica.players.get(interaction.guildId);
+			const player = client.lithiumx.players.get(interaction.guildId);
 			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
 			const voice = await client.cache.voiceStates?.get(member.id, interaction.guildId)?.channel();
 			if (!player) {
@@ -43,7 +43,8 @@ const VolumeCommand: ServiceExecute = {
 				}).catch(err => client.logger.error(`Failed to send not_same_voice_channel message: ${err}`));
 				return;
 			}
-			player.setVolume(percent).then(async () => await interaction.editOrReply({
+			player.setVolume(percent)
+			await interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
@@ -51,7 +52,7 @@ const VolumeCommand: ServiceExecute = {
 						timestamp: new Date().toISOString(),
 					},
 				],
-			}).catch(err => client.logger.error(`Failed to send volume update message: ${err}`))).catch(console.log); 
+			}).catch(err => client.logger.error(`Failed to send volume update message: ${err}`));
 		} catch (error) {
 			interaction.editOrReply({
 				content: (error as Error).message,

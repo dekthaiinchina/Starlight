@@ -8,7 +8,7 @@ export function UpdateStatus(client: UsingClient) {
             `${client.me.username}`,
             JSON.stringify({
                 client_id: client.me.id,
-                nodes: client.sonatica.nodes.map((data) => {
+                nodes: client.lithiumx.nodes.map((data) => {
                     return {
                         id: data.options.identifier,
                         player: data.stats.players,

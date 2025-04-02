@@ -9,151 +9,74 @@ const Botinfo: ServiceExecute = {
     filePath: __filename,
     async execute(client: UsingClient, database: IDatabase, interaction: CommandContext) {
         try {
-            const promises = [
-                client.cluster.broadcastEval((c) => c.cache.guilds.count()),
-                client.cluster.broadcastEval((c) => {
-                    let totalMembers = 0;
-                    for (const guild of c.cache.guilds.values().filter((g) => g.memberCount)) {
-                        totalMembers += guild.memberCount;
+            const start = performance.now();
+            const results = await Promise.all([
+                interaction.client.worker.broadcastEval((c) => {
+                    try {
+                        return c.cache.guilds.count() || 0;
+                    } catch (err) {
+                        console.error('Error counting guilds:', err);
+                        return 0;
                     }
-                    return totalMembers;
                 }),
-                client.cluster.broadcastEval((c) => c.gateway.latency),
-                client.cluster.broadcastEval(() => process.memoryUsage().heapUsed / 1024 / 1024),
-            ];
-            const results = await Promise.all(promises);
-            const totalGuilds = results[0].reduce((a: number, b: number) => a + b, 0);
-            const totalUsers = results[1].reduce((a: number, b: number) => a + b, 0);
-            const averageMemoryPerCluster = results[3].reduce((a: number, b: number) => a + b, 0) / ((client.cluster.ids as []).length + 1);
-            const mainEmbed = new Embed()
-                .setColor(0x8e8aff)
-                .setAuthor({
-                    name: `${client.me?.username} Information Bot ✨`,
-                    iconUrl: client.me?.avatarURL(),
-                })
-                .setThumbnail(`${client.me?.avatarURL()}`)
-                .setFooter({
-                    text: `🕒 Uptime: ${(client.FormatTime(client.uptime))}`,
-                })
-                .setDescription(`
-                ┊ **ID:** \`${client.me?.id}\`
-                ┊ **Username:** \`${client.me?.username}\`
-                ┊ **Guild(s):** \`${totalGuilds}\`
-                ┊ **Member(s):** \`${totalUsers}\`
-                ┊ **Ping:** \`${Math.round(client.gateway.latency)}ms\`
-                ┊ **OS:** \`${os.type()} ${os.release()}\`
-                ┊ **CPU:** \`${os.cpus()[0].model}\`
-                ┊ **Ram:** \`${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB / ${(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)} GB\`
-                ┊ **AvgMemory**: \`(${averageMemoryPerCluster.toFixed(2)} MB) | All Usage: ${results[3].reduce((a: number, b: number) => a + b, 0).toFixed(2)} mb\`
-                ┊ **API:** \`Starlight ${(await import("../../../../package.json")).version}\`
-                ┊ **Node.js:** \`${process.version}\`
-                ╰ **Seyfert:** \`v${((await import('../../../../package.json')).dependencies.seyfert)}\`
-            `);
-            const clusterData = await client.cluster.broadcastEval((c) => {
-                const users = () => {
-                    let totalMembers = 0;
-                    for (const guild of c.cache.guilds.values().filter((g) => g.memberCount)) {
-                        totalMembers += guild.memberCount;
+                interaction.client.worker.broadcastEval(async (c) => {
+                    try {
+                        return Array.from(await c.cache.guilds.values())
+                            .reduce((acc, guild) => acc + (guild.memberCount || 0), 0);
+                    } catch (err) {
+                        console.error('Error counting members:', err);
+                        return 0;
                     }
-                    return totalMembers;
-                }
-                return {
-                    shards: c.cluster.info.SHARD_LIST,
-                    id: c.cluster.id,
-                    guilds: c.cache.guilds.count(),
-                    users: users(),
-                    memory: process.memoryUsage().heapUsed,
-                    uptime: c.uptime,
-                }
+                }),
+                interaction.client.worker.broadcastEval(() => {
+                    try {
+                        return process.memoryUsage().heapUsed / 1024 / 1024;
+                    } catch (err) {
+                        console.error('Error getting memory usage:', err);
+                        return 0;
+                    }
+                }),
+            ]);
+            const totalGuilds = results[0].reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0);
+            const totalUsers = results[1].reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0);
+            const totalMemory = results[2].reduce((a, b) => (Number(a) || 0) + (Number(b) || 0), 0);
+            const clusterCount = interaction.client.workerData.shards.length + 1;
+            const averageMemoryPerCluster = totalMemory / clusterCount;
+
+            const embed = new Embed()
+                .setTitle("Client Information")
+                .setColor('Blurple')
+                .setDescription(`┊ **ID:** \`${interaction.client.me?.id || 'Unknown'}\`
+            ╰ **Username:** \`${interaction.client.me?.username || 'Unknown'}\`
+            **Resources**:
+            ┊ **CPU:** \`${os.cpus()[0].model}\`
+            ┊ **Memory:** \`${(process.memoryUsage().rss / 1024 / 1024).toFixed(2)} MB / ${(os.totalmem() / 1024 / 1024 / 1024).toFixed(2)} GB\`
+            ╰ **Avg Memory:** \`(${averageMemoryPerCluster.toFixed(2)} MB) | All Usage: ${totalMemory.toFixed(2)} MB\`
+            **Size:**
+            ┊ **Server(s):** \`${totalGuilds}\`
+            ┊ **Member(s):** \`${totalUsers}\`
+            ╰ **Ping:** \`${interaction.client.latency}ms\`
+            **Data:**
+            ┊ **API:** \`ElfieLite ${(await import("../../../../package.json")).version}\`
+            ┊ **Node.js:** \`${process.version}\`
+            ┊ **LithiumX:** \`v${(await import("../../../../package.json")).dependencies.lithiumx}\`
+            ╰ **Seyfert:** \`v${(await import("../../../../package.json")).dependencies.seyfert}\`
+            `)
+                .setFooter({
+                    text: `Execution Time: ${Math.round(performance.now() - start)}ms`
+                })
+
+            interaction.editResponse({
+                embeds: [embed]
             });
-
-            const maxClustersPerPage = 12;
-            const totalPages = Math.ceil(clusterData.length / maxClustersPerPage) + 1;
-
-            const createClusterEmbed = (page: number): Promise<Embed> => {
-                if (page === 0) return Promise.resolve(mainEmbed);
-
-                const start = (page - 1) * maxClustersPerPage;
-                const end = Math.min(start + maxClustersPerPage, clusterData.length);
-                const clusterInfo = clusterData.slice(start, end);
-
-                const embed = new Embed()
-                    .setColor("#8e8aff")
-                    .setAuthor({
-                        name: `${client.me?.username} Cluster Information ✨`,
-                        iconUrl: client.me?.avatarURL() || undefined,
-                    })
-                    .setFooter({
-                        text: `Page ${page} / ${totalPages - 1}`,
-                    });
-
-                clusterInfo.forEach((cluster) => {
-                    embed.addFields({
-                        name: `<:8891bluestar:1267053991473320069> Cluster: ${cluster.id}`,
-                        value: `\`\`\`autohotkey\nShards: ${cluster.shards.join(', ')} \nGuilds : ${cluster.guilds}\nUsers : ${cluster.users}\nMemory : ${client.FormatMemory(cluster.memory)}\nUptime: ${(client.FormatTime(cluster.uptime))} \`\`\``,
-                        inline: true
-                    });
-                });
-
-                return Promise.resolve(embed);
-            };
-            const createSelectMenu = () => {
-                const options = [{
-                    label: "Main Page",
-                    description: "View the main status page",
-                    value: "0",
-                }];
-
-                options.push(...Array.from({ length: totalPages - 1 }, (_, i) => ({
-                    label: `Page ${i + 1}`,
-                    description: `View clusters on page ${i + 1}`,
-                    value: `${i + 1}`,
-                })));
-
-                return new ActionRow().addComponents(
-                    new StringSelectMenu({
-                        custom_id: 'clusterPage',
-                        placeholder: 'Select a page',
-                        options: options
-                    })
-                );
-            };
-            const initialClusterEmbed = await createClusterEmbed(0);
-            const selectMenu = createSelectMenu();
-            let m;
-            try {
-                m = await interaction.editOrReply({
-                    embeds: [initialClusterEmbed],
-                    components: [selectMenu],
-                }, true);
-            } catch (err) {
-                console.error(err);
-                return;
-            }
-            const collector = (m as Message).createComponentCollector({
-                timeout: 60000,
-                filter: (i) => i.user.id === interaction.author.id,
-            });
-
-            collector.run('clusterPage', async (menuInteraction: SelectMenuInteraction) => {
-                const selectedPage = parseInt(menuInteraction.values[0]);
-                const updatedClusterEmbed = await createClusterEmbed(selectedPage);
-
-                await menuInteraction.update({
-                    embeds: [updatedClusterEmbed],
-                    components: [selectMenu],
-                });
-            });
-
-            setTimeout(() => {
-                collector.stop();
-            }, 60_000);
+            return
         } catch (error) {
-            console.error(error);
-            await interaction.editOrReply({
-                content: 'An error occurred while executing the command.',
-                components: [],
+            console.error('Error in info command:', error);
+            interaction.editResponse({
+                content: 'An error occurred while fetching bot information.',
+                embeds: []
             });
+            return
         }
     },
 };
