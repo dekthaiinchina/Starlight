@@ -46,7 +46,7 @@ export default createEvent({
                             client.logger.error(`[System] Error creating guild ${guild.name} (${guild.id})`, err);
                         })
                     ])
-                }, 1000 * 5);
+                }, 1000 * 2);
             } else {
                 client.redis.set(`guild:${client.me.id}:${guild.id}`, JSON.stringify(guildData));
                 client.logger.info(`[System] Loaded guild ${guild.name} (${guild.id})`);
