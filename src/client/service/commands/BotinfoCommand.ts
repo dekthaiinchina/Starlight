@@ -57,7 +57,7 @@ const Botinfo: ServiceExecute = {
             ┊ **Member(s):** \`${totalUsers}\`
             ╰ **Ping:** \`${interaction.client.latency}ms\`
             **Data:**
-            ┊ **API:** \`ElfieLite ${(await import("../../../../package.json")).version}\`
+            ┊ **API:** \`Starlight ${(await import("../../../../package.json")).version}\`
             ┊ **Node.js:** \`${process.version}\`
             ┊ **LithiumX:** \`v${(await import("../../../../package.json")).dependencies.lithiumx}\`
             ╰ **Seyfert:** \`v${(await import("../../../../package.json")).dependencies.seyfert}\`
