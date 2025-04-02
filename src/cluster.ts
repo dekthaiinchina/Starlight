@@ -1,39 +1,45 @@
-import { ClusterManager, HeartbeatManager } from "discord-hybrid-sharding";
-import config from "./config";
 import "dotenv/config";
+import { Logger } from "./lib/modules/Logger";
+import { IWorkerManager } from "./client/structures/utils/cluster/IWorkerManager";
+import { PresenceUpdateStatus } from "seyfert/lib/types";
+import os from "os";
 
-const manager = new ClusterManager(`${__dirname}/client/index.js`, {
-	totalShards: "auto",
-	shardsPerClusters: 50,
-	totalClusters: "auto",
-	mode: "worker",
-	token: config.TOKEN,
+const log = new Logger("Cluster");
+
+const manager = new IWorkerManager({
+	mode: "clusters",
+	path: `${__dirname}/client/index.js`,
+	shardsPerWorker: 5,
+	workerProxy: true,
+	version: 10,
+	properties: {
+		browser: "Starlight",
+		device: "Starlight",
+		os: os.platform(),
+	},
+	presence(shardId, workerId) {
+		return {
+			status: PresenceUpdateStatus.Online,
+			since: Date.now(),
+			afk: false,
+			activities: [
+				{
+					name: "Starlight make by Anantix Network",
+					state: `Cluster ${workerId} | Shard ${shardId}`,
+					type: 0,
+				},
+			]
+		};
+	},
 });
 
-manager.extend(
-	new HeartbeatManager({
-		interval: 2000, // Interval to send a heartbeat
-		maxMissedHeartbeats: 5, // Maximum amount of missed Heartbeats until Cluster will get respawned
-	}),
-);
-manager.on("clusterCreate", (cluster) => {
-	cluster.on("spawn", () => console.info(`Cluster ${cluster.id} spawned`));
-	cluster.on("death", () => console.error(`Cluster ${cluster.id} died`));
-	cluster.on("ready", () => console.info(`Cluster ${cluster.id} ready`));
-	cluster.on("disconnect", () => console.warn(`Cluster ${cluster.id} disconnected`));
-	cluster.on("reconnecting", () => console.warn(`Cluster ${cluster.id} reconnecting`));
-	cluster.on("exit", () => console.error(`Cluster ${cluster.id} exited`));
-	cluster.on("message", (message) => console.info(`Cluster ${cluster.id} message: ${JSON.stringify(message)}`));
-	cluster.on("error", (error) => console.error(`Cluster ${cluster.id} error: ${error}`));
-	cluster.on("warn", (warn) => console.warn(`Cluster ${cluster.id} warn: ${warn}`));
-	process.on("SIGINT", () => {
-		console.warn(`Cluster ${cluster.id} received SIGINT`);
-		cluster.kill({
-			force: true,
-		});
+manager.on("ClusterCreate", (cluster) => {
+	Array.from({ length: cluster.shardStart + cluster.totalShards - 1 }).forEach((shardId: number) => {
+		log.info(`Shard ${shardId} spawned`);
+		cluster.getShardInfo(shardId).then((info) => log.debug(`Shard ${shardId} | Cluster ${info.workerId} | Ready: ${info.open}`));
 	});
 });
-manager.on("debug", (debug) => console.debug(debug));
-manager.spawn({ timeout: -1 })
-	.then(() => console.info("All clusters spawned"))
+manager.on("Debug", (debug) => log.debug(debug));
+manager.start()
+	.then(() => log.info("All clusters spawned"))
 	.catch((error) => console.error("Error spawning clusters:", error));
