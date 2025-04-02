@@ -11,7 +11,7 @@ const LoopCommand: ServiceExecute = {
 	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof LoopCommandOptions>): Promise<void> {
 		try {
 			const t = client.t(database.lang);
-			const player = client.sonatica.players.get(interaction.guildId);
+			const player = client.lithiumx.players.get(interaction.guildId);
 			if (!player) {
 				interaction.editOrReply({
 					embeds: [new Embed().setColor("Red").setDescription(t.loop.not_playing.get())],
@@ -33,7 +33,8 @@ const LoopCommand: ServiceExecute = {
 			}
 			switch (type) {
 				case "song": {
-					player.setRepeat(1);
+					player.setTrackRepeat(true);
+					player.setQueueRepeat(false);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [
@@ -54,7 +55,8 @@ const LoopCommand: ServiceExecute = {
 					return
 				}
 				case "queue": {
-					player.setRepeat(2);
+					player.setTrackRepeat(false);
+					player.setQueueRepeat(true);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [
@@ -75,13 +77,14 @@ const LoopCommand: ServiceExecute = {
 					return
 				}
 				case "off": {
-					player.setRepeat(0);
+					player.setTrackRepeat(false);
+					player.setQueueRepeat(false);
 					interaction.editOrReply({
 						components: [config.config.ads_component],
 						embeds: [
 							new Embed()
 								.setColor("#a861ff")
-								.setDescription(t.loop.loop_off.get())
+								.setDescription(`Loop closed successfully.`)
 								.setImage(config.config.ads_image)
 								.addFields([
 									{
