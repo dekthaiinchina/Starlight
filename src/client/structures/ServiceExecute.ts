@@ -213,7 +213,7 @@ export class ServiceLoader {
         return ['NodeCreate', 'NodeDestroy', 'NodeConnect', 'NodeReconnect',
             'NodeDisconnect', 'NodeError', 'NodeRaw', 'PlayerCreate',
             'PlayerDestroy', 'QueueEnd', 'PlayerMove', 'PlayerDisconnect',
-            'TrackStart', 'TrackEnd', 'TrackStuck', 'TrackError', 'SocketClosed']
+            'TrackStart', 'TrackEnd', 'TrackStuck', 'TrackError']
             .includes(eventName);
     }
 

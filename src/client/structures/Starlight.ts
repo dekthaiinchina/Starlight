@@ -35,7 +35,7 @@ export class Starlight extends ClusterClient {
 				enabled: true,
 				time: 60000,
 			},
-			shards: this.workerData.workerId,
+			defaultSearchPlatform: "youtube",
             send: async (id, payload) => {
                 this.guilds.fetch(id).then(async guild => {
 					if (!guild) return;
@@ -46,6 +46,7 @@ export class Starlight extends ClusterClient {
 				});
             }
 		});
+		this.lithiumx.init(config.CLIENT_ID);
 		this.setServices({
 			langs: {
 				default: "en",
