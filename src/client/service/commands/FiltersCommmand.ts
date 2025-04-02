@@ -1,0 +1,113 @@
+import { ServiceExecute } from "@/client/structures/ServiceExecute";
+import { UsingClient, CommandContext, Embed } from 'seyfert';
+import { IDatabase } from "@/client/interfaces/IDatabase";
+import { FiltersCommandOptions } from "@/client/commands/music/Filters";
+import { Filters, Player,  } from "sonatica";
+import config from "@/config";
+
+const FiltersCommmand: ServiceExecute = {
+    name: "FiltersCommmand",
+    type: "commands",
+    filePath: __filename,
+    async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof FiltersCommandOptions>): Promise<void> {
+        const player: Player = client.sonatica.players.get(interaction.guildId);
+        const filter = interaction.options.filter
+        let mode = interaction.options.mode as boolean;
+        if (typeof mode === "undefined")  mode = true;
+        const t = client.t(database.lang);
+        console.log(interaction.options)
+        if (!player) {
+            interaction.editOrReply({
+                embeds: [new Embed().setColor("Red").setDescription(t.loop.not_playing.get())],
+            }).then().catch(console.error);
+            return
+        }
+        if (!filter) {
+            interaction.editOrReply({
+                embeds: [
+                    {
+                        color: 0xff0000,
+                        description: t.loop.specify_type.get(),
+                    },
+                ],
+            }).then().catch(console.error);
+            return
+        }
+        const filters = new Filters(player);
+        if (filter === "clear") {
+            await filters.clearFilters();
+            interaction.editOrReply({
+                embeds: [
+                    new Embed()
+                        .setColor("#a861ff")
+                        .setDescription(t.filter.filter_cleared.get())
+                        .setImage(config.config.ads_image)
+                        .addFields([
+                            {
+                                name: "Sponsor",
+                                value: config.config.ads_text,
+                                inline: false,
+                            },
+                        ])
+                        .setTimestamp(),
+                ],
+            }).then().catch(console.error);
+            return
+        }
+        switch (mode) {
+            case true: {
+                await filters.setFilter(filter, true);
+                interaction.editOrReply({
+                    embeds: [
+                        new Embed()
+                            .setColor("#a861ff")
+                            .setDescription(t.filter.filter_success(filter).get())
+                            .setImage(config.config.ads_image)
+                            .addFields([
+                                {
+                                    name: "Sponsor",
+                                    value: config.config.ads_text,
+                                    inline: false,
+                                },
+                            ])
+                            .setTimestamp(),
+                    ],
+                }).then().catch(console.error);
+                return
+            }
+            case false: {
+                await filters.setFilter(filter, false);
+                interaction.editOrReply({
+                    embeds: [
+                        new Embed()
+                            .setColor("#a861ff")
+                            .setDescription(t.filter.filter_removed(filter).get())
+                            .setImage(config.config.ads_image)
+                            .addFields([
+                                {
+                                    name: "Sponsor",
+                                    value: config.config.ads_text,
+                                    inline: false,
+                                },
+                            ])
+                            .setTimestamp(),
+                    ],
+                }).then().catch(console.error);
+                return
+            }
+            default: {
+                interaction.editOrReply({
+                    embeds: [
+                        {
+                            color: 0xff0000,
+                            description: t.filter.filter_not_found.get(),
+                        },
+                    ],
+                }).then().catch(console.error);
+                return
+            }
+        }
+    },
+}
+
+export default FiltersCommmand;

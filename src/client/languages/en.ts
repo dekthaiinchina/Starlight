@@ -28,5 +28,13 @@ export default {
 		loop_song: "Song loop has been successfully turnned on.",
 		loop_queue: "On Queue loop complete",
 		loop_off: "Loop closed successfully.",
+	},
+	filter: {
+		specify_filter: "Please specify a filter.",
+		filter_not_found: "The filter was not found.",
+		filter_already: "The filter is already enabled.",
+		filter_cleared: "The filter has been successfully cleared.",
+		filter_success: (name: string) => `The filter ${name} has been successfully enabled.`,
+		filter_removed: (name: string) => `The filter ${name} has been successfully removed.`,
 	}
 };
