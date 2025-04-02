@@ -2,6 +2,23 @@ import { Logger } from "seyfert";
 import { Starlight } from "./structures/Starlight";
 import { customLogger } from "./structures/utils/Logger";
 
+process.on("unhandledRejection", (reason, promise) => {
+    (async () => {
+        const result = await promise;
+        client.logger.error(`Unhandled Rejection at: ${JSON.stringify(result)} reason: ${JSON.stringify(reason)}`);
+    })().catch((err: Error) => {
+        client.logger.error(`Error in unhandledRejection handler: ${err}`);
+    });
+});
+
+process.on("uncaughtException", (err: Error) => {
+    client.logger.error(`Uncaught Exception: ${err.message}`);
+});
+
+process.on("uncaughtExceptionMonitor", (err: Error) => {
+    client.logger.error(`Uncaught Exception Monitor: ${err.message}`);
+})
+
 export const client = new Starlight();
 Logger.customize(customLogger);
 client.start().then(() => {
@@ -15,16 +32,4 @@ client.start().then(() => {
     });
 }).catch((err) => {
     client.logger.error(err);
-});
-process.on("unhandledRejection", (reason, promise) => {
-    (async () => {
-        const result = await promise;
-        client.logger.error(`Unhandled Rejection at: ${JSON.stringify(result)} reason: ${JSON.stringify(reason)}`);
-    })().catch((err: Error) => {
-        client.logger.error(`Error in unhandledRejection handler: ${err}`);
-    });
-});
-
-process.on("uncaughtException", (err: Error) => {
-    client.logger.error(`Uncaught Exception: ${err.message}`);
 });
