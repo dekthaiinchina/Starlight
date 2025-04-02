@@ -2,7 +2,7 @@ import { ServiceExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient, CommandContext, Embed } from 'seyfert';
 import { IDatabase } from "@/client/interfaces/IDatabase";
 import { FiltersCommandOptions } from "@/client/commands/music/Filters";
-import { Filters, Player,  } from "sonatica";
+import { Filters, LithiumXPlayer, } from "lithiumx";
 import config from "@/config";
 
 const FiltersCommmand: ServiceExecute = {
@@ -10,10 +10,10 @@ const FiltersCommmand: ServiceExecute = {
     type: "commands",
     filePath: __filename,
     async execute(client: UsingClient, database: IDatabase, interaction: CommandContext<typeof FiltersCommandOptions>): Promise<void> {
-        const player: Player = client.sonatica.players.get(interaction.guildId);
+        const player: LithiumXPlayer = client.lithiumx.players.get(interaction.guildId);
         const filter = interaction.options.filter
         let mode = interaction.options.mode as boolean;
-        if (typeof mode === "undefined")  mode = true;
+        if (typeof mode === "undefined") mode = true;
         const t = client.t(database.lang);
         console.log(interaction.options)
         if (!player) {

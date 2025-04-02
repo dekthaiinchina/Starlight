@@ -27,19 +27,19 @@ export const AutoPlayCommandOptions = {
 export default class AutoPlayCommand extends Command {
 	async run(ctx: CommandContext<typeof AutoPlayCommandOptions>) {
 		try {
-			const player = ctx.client.sonatica.players.get(ctx.guildId);
+			const player = ctx.client.lithiumx.players.get(ctx.guildId);
 			if (!player) {
 				return ctx.editOrReply({
 					content: "There is no player in this guild.",
 				});
 			} else {
 				if (ctx.options.type) {
-					player.setAutoplay(true);
+					player.setAutoplay(true, ctx.author);
 					return ctx.editOrReply({
 						content: "AutoPlay has been enabled.",
 					});
 				} else {
-					player.setAutoplay(false);
+					player.setAutoplay(false, ctx.author);
 					return ctx.editOrReply({
 						content: "AutoPlay has been disabled.",
 					});

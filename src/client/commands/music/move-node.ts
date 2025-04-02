@@ -10,11 +10,11 @@ export const MoveNodeCommandOptions = {
 			const nodes: {
 				name: string;
 				value: string;
-			}[] = interaction.client.sonatica.nodes.map((node) => ({
+			}[] = interaction.client.lithiumx.nodes.map((node) => ({
 				name: `${node.options.identifier} - ${node.stats.players} Players`,
 				value: node.options.identifier,
 			}));
-			return await interaction.respond(nodes).catch(() => {});
+			return await interaction.respond(nodes).catch(() => { });
 		},
 	}),
 };

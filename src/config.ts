@@ -1,4 +1,4 @@
-import { NodeOptions } from "sonatica";
+import { NodeOptions } from "lithiumx";
 import "dotenv/config";
 import { ActionRow, BuilderComponents, Button } from "seyfert";
 
@@ -13,17 +13,15 @@ const config: { [key: string]: IConfig } = {
 		},
 		Lavalink: [
 			{
-				identifier: "Node 1",
-				host: "lavalink.nextgencoders.xyz",
-				port: 443,
-				password: "nextgencoders",
-				playback: true,
-				secure: true,
-				search: true,
+				identifier: "Anantix SG",
+				host: "ipv4.digitalocean-sg.anantix.network",
+				port: 2333,
+				password: "A-SCARLET-ROSE-AMONG-THORNS-ENVIED-BY-ALL",
+				secure: false,
 				requestTimeout: 10000,
 				retryDelay: 5000,
 				retryAmount: Infinity,
-			}
+			},
 		],
 	},
 	production: {
@@ -36,13 +34,11 @@ const config: { [key: string]: IConfig } = {
 		},
 		Lavalink: [
 			{
-				identifier: "Node 1",
-				host: "lavalink.nextgencoders.xyz",
-				port: 443,
-				password: "nextgencoders",
-				playback: true,
-				secure: true,
-				search: true,
+				identifier: "Anantix SG",
+				host: "ipv4.digitalocean-sg.anantix.network",
+				port: 2333,
+				password: "A-SCARLET-ROSE-AMONG-THORNS-ENVIED-BY-ALL",
+				secure: false,
 				requestTimeout: 10000,
 				retryDelay: 5000,
 				retryAmount: Infinity,

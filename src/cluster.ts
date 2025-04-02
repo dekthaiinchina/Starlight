@@ -4,7 +4,7 @@ import "dotenv/config";
 
 const manager = new ClusterManager(`${__dirname}/client/index.js`, {
 	totalShards: "auto",
-	shardsPerClusters: 5,
+	shardsPerClusters: 50,
 	totalClusters: "auto",
 	mode: "worker",
 	token: config.TOKEN,

@@ -32,7 +32,7 @@ export class Logger {
 
     return spaces + bar;
   }
-
+  
   private prefixes: Map<LogLevels, string> = new Map([
     [LogLevels.Debug, "DEBUG"],
     [LogLevels.Error, "ERROR"],

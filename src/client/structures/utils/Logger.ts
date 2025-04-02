@@ -51,6 +51,5 @@ export function customLogger(_this: Logger, level: LogLevels, args: unknown[]): 
 		[LogLevels.Fatal]: c.red,
 	};
 	const text = `${(`${timeFormat}`)} [Starlight] ${c.grey(formatMemoryUsage(memory.rss))} ${emojis[level]} [${colors[level](label)}] ${addPadding(label)}`;
-
 	return [text, ...args];
 }

@@ -9,7 +9,7 @@ const SkipCommand: ServiceExecute = {
 	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext): Promise<void> {
 		try {
 			const t = client.t(database.lang);
-			const player = client.sonatica.players.get(interaction.guildId);
+			const player = client.lithiumx.players.get(interaction.guildId);
 			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
 			const voice = await client.cache.voiceStates?.get(interaction.member.id, interaction.guildId)?.channel();
 			if (!player) {
@@ -46,14 +46,15 @@ const SkipCommand: ServiceExecute = {
 				}).then().catch(console.error);
 				return;
 			}
-			player.stop().then(async () => await interaction.editOrReply({
+			player.stop()
+			await interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
 						description: t.music.skip.get(),
 					},
 				],
-			}).then().catch(console.error)).catch(console.error);
+			}).then().catch(console.error);
 			return;
 		} catch (error) {
 			console.error(error);

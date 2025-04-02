@@ -12,7 +12,7 @@ const PauseCommand: ServiceExecute = {
 			const t = client.t(database.lang);
 			const voice = await client.cache.voiceStates?.get(member.id, interaction.guildId)?.channel();
 			const bot = client.cache.voiceStates?.get(client.me.id, interaction.guildId);
-			const player = client.sonatica.players.get(interaction.guildId);
+			const player = client.lithiumx.players.get(interaction.guildId);
 			if (!player) {
 				await interaction.editOrReply({
 					content: `Error: Not Found`,
@@ -41,14 +41,15 @@ const PauseCommand: ServiceExecute = {
 				}).then().catch(console.error);
 				return;
 			}
-			player.pause(true).then(() => interaction.editOrReply({
+			player.pause(true)
+			interaction.editOrReply({
 				embeds: [
 					{
 						color: 0x00ff00,
 						description: t.play.pause.get()
 					},
 				],
-			}).then().catch(console.error)).catch(console.error);
+			}).then().catch(console.error)
 			return;
 		} catch (error) {
 			await interaction.editOrReply({ content: (error as Error).message }).then().catch(console.error);

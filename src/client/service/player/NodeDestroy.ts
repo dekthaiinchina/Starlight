@@ -1,11 +1,11 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Node } from "sonatica";
+import { LithiumXNode } from "lithiumx";
 
 const NodeDestroy: PlayerExecute = {
-	name: "nodeDestroy",
+	name: "NodeDestroy",
 	type: "player",
-	execute(client: UsingClient, node: Node): Promise<void> {
+	execute(client: UsingClient, node: LithiumXNode): Promise<void> {
 		return Promise.resolve().then(() => client.logger.warn(`Node ${node.options.identifier} destroyed`));
 	},
 };

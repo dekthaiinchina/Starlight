@@ -2,15 +2,15 @@ import config from "../../config";
 import { Client } from "seyfert";
 import { PrismaClient } from "@prisma/client";
 import { ServiceLoader } from "./ServiceExecute";
-import { Sonatica } from "sonatica";
 import { ErrorRequest } from "./utils/Client";
 import { Redis } from "ioredis";
 import { ClusterClient, getInfo } from "discord-hybrid-sharding";
-import { StringCacheAdapter } from "./utils/StringCacheAdapter";
+import { RedisAdapter } from "@slipher/redis-adapter";
+import { LithiumXManager } from "lithiumx";
 
 export class Starlight extends Client {
 	public redis: Redis;
-	public sonatica: Sonatica;
+	public lithiumx: LithiumXManager;
 	public prisma: PrismaClient;
 	public services: ServiceLoader;
 	public cluster: ClusterClient<this>;
@@ -38,13 +38,14 @@ export class Starlight extends Client {
 		});
 
 		this.cluster = new ClusterClient(this);
-		this.sonatica = new Sonatica({
+		this.lithiumx = new LithiumXManager({
 			nodes: config.Lavalink,
 			shards: this.cluster.info.TOTAL_SHARDS,
-			autoMove: true,
-			autoResume: true,
 			autoPlay: true,
-			sorter: (nodes) => nodes,
+			caches: {
+				enabled: true,
+				time: 60000,
+			},
 			send: (id, payload) => {
 				this.guilds.fetch(id).then(guild => {
 					if (!guild) return;
@@ -70,11 +71,21 @@ export class Starlight extends Client {
 					stageInstances: true,
 					channels: true,
 				},
-				adapter: new StringCacheAdapter()
+				// adapter: new RedisAdapter({
+				// 	namespace: "seyfert",
+				// 	redisOptions: {
+				// 		url: config.REDIS,
+				// 	},
+				// })
 			},
 		});
 		this.redis = new Redis(config.REDIS)
 		this.prisma = new PrismaClient();
+		this.prisma.$connect().then(() => {
+			this.logger.info("[System] Prisma connected");
+		}).catch((error: Error) => {
+			this.logger.error(`[System] Prisma error: ${error.message}`);
+		});
 		this.services = new ServiceLoader(this);
 		this.services.load().then(() => {
 			this.logger.info(`[System] Services loaded`);

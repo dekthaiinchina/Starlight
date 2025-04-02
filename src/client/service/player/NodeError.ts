@@ -1,11 +1,11 @@
 import { PlayerExecute } from "@/client/structures/ServiceExecute";
 import { UsingClient } from 'seyfert';
-import { Node } from "sonatica";
+import { LithiumXNode } from "lithiumx";
 
 const NodeError: PlayerExecute = {
-	name: "nodeError",
+	name: "NodeError",
 	type: "player",
-	execute(client: UsingClient, node: Node, error: Error): Promise<void> {
+	execute(client: UsingClient, node: LithiumXNode, error: Error): Promise<void> {
 		return Promise.resolve().then(() => client.logger.error(`Node ${node.options.identifier} error: ${error.message}`));
 	},
 };

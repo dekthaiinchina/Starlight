@@ -1,7 +1,7 @@
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
 import { IDatabase } from "@/client/interfaces/IDatabase";
 import { CommandContext, UsingClient } from 'seyfert';
-import { Node } from "sonatica";
+import { LithiumXNode } from "lithiumx";
 import { stripIndent } from "common-tags";
 
 const NodeCommand: ServiceExecute = {
@@ -9,7 +9,7 @@ const NodeCommand: ServiceExecute = {
 	type: "commands",
 	filePath: __filename,
 	async execute(client: UsingClient, database: IDatabase, interaction: CommandContext) {
-		const nodeFields = client.sonatica.nodes.map((node: Node) => {
+		const nodeFields = client.lithiumx.nodes.map((node: LithiumXNode) => {
 			const connectedStatus = node.connected ? `🟢` : `🔴`;
 			const identifier = node.options.identifier;
 			const players = node.stats.players || 0;
@@ -34,7 +34,7 @@ const NodeCommand: ServiceExecute = {
 			};
 		});
 
-		const description = `<:planet:1266771069604462672> **All nodes: [${client.sonatica.nodes.size}]**\n\`\`\`ml\nConnected : ${client.sonatica.nodes.reduce((a, b) => a + b.stats.players, 0)} Room\nPlaying : ${client.sonatica.nodes.reduce((a, b) => a + b.stats.playingPlayers, 0)} Room\n\`\`\``;
+		const description = `<:planet:1266771069604462672> **All nodes: [${client.lithiumx.nodes.size}]**\n\`\`\`ml\nConnected : ${client.lithiumx.nodes.reduce((a, b) => a + b.stats.players, 0)} Room\nPlaying : ${client.lithiumx.nodes.reduce((a, b) => a + b.stats.playingPlayers, 0)} Room\n\`\`\``;
 
 		await interaction.editOrReply({
 			embeds: [
