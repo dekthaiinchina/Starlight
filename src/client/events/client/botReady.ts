@@ -20,29 +20,33 @@ export default createEvent({
                 where: { id: guild.id },
             })
             if (!guildData) {
-                await client.prisma.guild.create({
-                    data: {
-                        id: guild.id,
-                        lang: "th",
-                        name: guild.name,
-                        room: { create: { id: "" } },
-                        ai: { create: { name: "", channel: "" } },
-                    },
-                    select: {
-                        uuid: true,
-                        roomid: true,
-                        id: true,
-                        lang: true,
-                        name: true,
-                        room: { select: { id: true, message: true } },
-                        ai: { select: { name: true, channel: true } },
-                    },
-                }).then((db) => {
-                    client.redis.set(`guild:${client.me.id}:${guild.id}`, JSON.stringify(db));
-                    client.logger.info(`[System] Created new guild ${guild.name} (${guild.id})`);
-                }).catch((err) => {
-                    client.logger.error(`[System] Error creating guild ${guild.name} (${guild.id})`, err);
-                });
+                setTimeout(async () => {
+                    await Promise.all([
+                        client.prisma.guild.create({
+                            data: {
+                                id: guild.id,
+                                lang: "th",
+                                name: guild.name,
+                                room: { create: { id: "" } },
+                                ai: { create: { name: "", channel: "" } },
+                            },
+                            select: {
+                                uuid: true,
+                                roomid: true,
+                                id: true,
+                                lang: true,
+                                name: true,
+                                room: { select: { id: true, message: true } },
+                                ai: { select: { name: true, channel: true } },
+                            },
+                        }).then((db) => {
+                            client.redis.set(`guild:${client.me.id}:${guild.id}`, JSON.stringify(db));
+                            client.logger.info(`[System] Created new guild ${guild.name} (${guild.id})`);
+                        }).catch((err) => {
+                            client.logger.error(`[System] Error creating guild ${guild.name} (${guild.id})`, err);
+                        })
+                    ])
+                }, 1000 * 5);
             } else {
                 client.redis.set(`guild:${client.me.id}:${guild.id}`, JSON.stringify(guildData));
                 client.logger.info(`[System] Loaded guild ${guild.name} (${guild.id})`);
