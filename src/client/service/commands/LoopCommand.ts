@@ -104,6 +104,6 @@ const LoopCommand: ServiceExecute = {
 			await interaction.editOrReply({ content: (err as Error).message }).then().catch(console.error);
 			return;
 		}
-	},
+	}
 };
 export default LoopCommand;
