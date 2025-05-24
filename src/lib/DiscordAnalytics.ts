@@ -1,4 +1,4 @@
-import { WorkerClient } from "seyfert";
+import { Starlight } from "@/client/structures/Starlight";
 import {
     ApiEndpoints,
     ApplicationCommandType,
@@ -9,34 +9,10 @@ import {
     Locale,
     TrackGuildType
 } from "./utils/types";
+import { Guild, Interaction, ModalSubmitInteraction } from "seyfert";
 
-/**
- * @class DiscordAnalytics
- * @description The Discord.js class for the DiscordAnalytics library.
- * @param {DiscordAnalyticsOptions} options - Configuration options.
- * @property {any} options.client - The Discord.js client to track events for.
- * @property {string} options.apiToken - The API token for DiscordAnalytics.
- * @property {boolean} options.sharded - Whether the Discord.js client is sharded.
- * @property {boolean} options.debug - Enable or not the debug mode /!\ MUST BE USED ONLY FOR DEVELOPMENT PURPOSES /!\
- * @example
- * const { default: DiscordAnalytics } = require('discord-analytics/discordjs');
- * const { Client, IntentsBitField } = require('discord.js');
- * const client = new Client({
- *   intents: [IntentsBitField.Flags.Guilds]
- * })
- * client.on('ready', () => {
- *   const analytics = new DiscordAnalytics({
- *     client: client,
- *     apiToken: 'YOUR_API_TOKEN'
- *   });
- *   analytics.trackEvents();
- * });
- * client.login('YOUR_BOT_TOKEN');
- *
- * // Check docs for more informations about advanced usages : https://docs.discordanalytics.xyz/get-started/installation/discord.js
- */
 export default class DiscordAnalytics {
-    private readonly _client: WorkerClient;
+    private readonly _client: Starlight;
     private readonly _apiToken: string;
     private readonly _sharded: boolean = false;
     private readonly _debug: boolean = true
@@ -92,10 +68,26 @@ export default class DiscordAnalytics {
             setInterval(async () => {
                 if (this._debug) console.debug("[DISCORDANALYTICS] Sending stats...")
 
-                let guildCount = this._client.cache.guilds.count();
+                // let guildCount = this._sharded ?
+                //     ((await this._client.shard?.broadcastEval((c: any) => c.guilds.cache.size))?.reduce((a: number, b: number) => a + b, 0) || 0) :
+                //     this._client.guilds.cache.size;
 
-                let userCount = this._client.cache.guilds.values().reduce((a: number, g: any) => a + (g.memberCount || 0), 0);
-
+                // let userCount = this._sharded ?
+                //     ((await this._client.shard?.broadcastEval((c: any) => c.guilds.cache.reduce((a: number, g: any) => a + (g.memberCount || 0), 0)))?.reduce((a: number, b: number) => a + b, 0) || 0) :
+                //     this._client.guilds.cache.reduce((a: number, g: any) => a + (g.memberCount || 0), 0);
+                let guildCount = this._sharded ?
+                    ((await this._client.worker?.broadcastEval((c: Starlight) => c.cache.guilds.count())) || 0) as number :
+                    this._client.cache.guilds.count();
+                let userCount = this._sharded ?
+                    ((await this._client.worker?.broadcastEval((c: Starlight) => {
+                        let totalMembers = 0;
+                        for (const guild of c.cache.guilds.values().filter((g) => g.memberCount)) {
+                            totalMembers += guild.memberCount;
+                        }
+                        return totalMembers;
+                    }
+                    )) || 0) as number :
+                    this._client.cache.guilds.values().reduce((acc, guild) => acc + (guild.memberCount || 0), 0);
                 fetch(`${ApiEndpoints.BASE_URL}${ApiEndpoints.EDIT_STATS_URL.replace(':id', this._client.me.id)}`, {
                     headers: this._headers,
                     body: JSON.stringify(this.statsData),
@@ -172,7 +164,8 @@ export default class DiscordAnalytics {
 
         let guildsMembers: number[] = []
 
-        guildsMembers = this._client.cache.guilds.values().map((guild: any) => guild.memberCount)
+        if (!this._sharded) guildsMembers = this._client.cache.guilds.values().map((guild: Guild<"cached">) => guild.memberCount)
+        else guildsMembers = [].concat(await this._client.worker?.broadcastEval((c: Starlight) => c.cache.guilds.values().map((guild: any) => guild.memberCount)))
 
         for (const guild of guildsMembers) {
             if (guild <= 100) res.little++
@@ -191,54 +184,55 @@ export default class DiscordAnalytics {
      * @param interaction - BaseInteraction class and its extensions only
      * @param interactionNameResolver - A function that will resolve the name of the interaction
      */
-    public async trackInteractions(interaction: any, interactionNameResolver?: (interaction: any) => string) {
+    public async trackInteractions(interaction: Interaction, interactionNameResolver?: (interaction: Interaction) => string) {
         if (this._debug) console.log("[DISCORDANALYTICS] trackInteractions() triggered")
         if (!this._isReady) throw new Error(ErrorCodes.INSTANCE_NOT_INITIALIZED)
 
         let guilds: { locale: Locale, number: number }[] = []
-        this._client.cache.guilds.values().map((current: any) => guilds.find((x) => x.locale === current.preferredLocale) ?
+        this._client.cache.guilds.values().map((current: Guild<"cached">) => guilds.find((x) => x.locale === current.preferredLocale) ?
             ++guilds.find((x) => x.locale === current.preferredLocale)!.number :
-            guilds.push({ locale: current.preferredLocale, number: 1 }));
+            guilds.push({ locale: current.preferredLocale as Locale, number: 1 }));
 
         this.statsData.guildsLocales = guilds
 
         this.statsData.locales.find((x) => x.locale === interaction.locale) ?
             ++this.statsData.locales.find((x) => x.locale === interaction.locale)!.number :
-            this.statsData.locales.push({ locale: interaction.locale, number: 1 });
+            this.statsData.locales.push({ locale: interaction.locale as Locale, number: 1 });
 
-        if (interaction.type === InteractionType.ApplicationCommand) {
-            const commandType = interaction.command ? interaction.command.type : ApplicationCommandType.ChatInputCommand;
-            const commandName = interactionNameResolver ? interactionNameResolver(interaction) : interaction.commandName;
-            this.statsData.interactions.find((x) => x.name === commandName && x.type === interaction.type && x.command_type === commandType) ?
-                ++this.statsData.interactions.find((x) => x.name === commandName && x.type === interaction.type && x.command_type === commandType)!.number :
-                this.statsData.interactions.push({ name: commandName, number: 1, type: interaction.type as InteractionType, command_type: commandType });
+        if (interaction.isChatInput()) {
+            const commandType = interaction.data.name ? interaction.data.type : ApplicationCommandType.ChatInputCommand;
+            const commandName = interactionNameResolver ? interactionNameResolver(interaction) : interaction.data.name;
+            this.statsData.interactions.find((x) => x.name === commandName && x.type === InteractionType.ApplicationCommand && x.command_type === commandType) ?
+                ++this.statsData.interactions.find((x) => x.name === commandName && x.type === InteractionType.ApplicationCommand && x.command_type === commandType)!.number :
+                this.statsData.interactions.push({ name: commandName, number: 1, type: InteractionType.ApplicationCommand, command_type: commandType  as ApplicationCommandType });
         }
 
-        else if (interaction.type === InteractionType.MessageComponent || interaction.type === InteractionType.ModalSubmit) {
-            const interactionName = interactionNameResolver ? interactionNameResolver(interaction) : interaction.customId;
+        else if (interaction.isMessage() || interaction.isModal()) {
+            const interactionName = interactionNameResolver ? interactionNameResolver(interaction) : (interaction as ModalSubmitInteraction).customId;
+            const interactionType = interaction.isMessage() ? InteractionType.MessageComponent : InteractionType.ModalSubmit;
 
-            this.statsData.interactions.find((x) => x.name === interactionName && x.type === interaction.type) ?
-                ++this.statsData.interactions.find((x) => x.name === interactionName && x.type === interaction.type)!.number :
-                this.statsData.interactions.push({ name: interactionName, number: 1, type: interaction.type });
+            this.statsData.interactions.find((x) => x.name === interactionName && x.type === interactionType) ?
+                ++this.statsData.interactions.find((x) => x.name === interactionName && x.type === interactionType)!.number :
+                this.statsData.interactions.push({ name: interactionName, number: 1, type: interactionType });
         }
 
         const guildData = this.statsData.guildsStats.find(guild => interaction.guild ? guild.guildId === interaction.guild.id : guild.guildId === "dm")
         if (guildData) this.statsData.guildsStats = this.statsData.guildsStats.filter(guild => guild.guildId !== guildData.guildId)
         this.statsData.guildsStats.push({
             guildId: interaction.guild ? interaction.guild.id : "dm",
-            name: interaction.guild ? interaction.guild.name : "DM",
-            icon: interaction.guild && interaction.guild.icon ? interaction.guild.icon : undefined,
+            name: interaction.guild ? (await interaction.fetchGuild()).name : "DM",
+            icon: interaction.guild && (await interaction.fetchGuild()).icon ? (await interaction.fetchGuild()).icon : undefined,
             interactions: guildData ? guildData.interactions + 1 : 1,
-            members: interaction.guild ? interaction.guild.memberCount : 0
+            members: interaction.guild ? (await interaction.fetchGuild()).memberCount : 0
         })
 
         const oneWeekAgo = new Date()
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7)
 
-        if (!interaction.inGuild()) ++this.statsData.users_type.private_message
-        else if (interaction.member && interaction.member.permissions && interaction.member.permissions.has(8n) || interaction.member.permissions.has(32n)) ++this.statsData.users_type.admin
-        else if (interaction.member && interaction.member.permissions && interaction.member.permissions.has(8192n) || interaction.member.permissions.has(2n) || interaction.member.permissions.has(4n) || interaction.member.permissions.has(4194304n) || interaction.member.permissions.has(8388608n) || interaction.member.permissions.has(16777216n) || interaction.member.permissions.has(1099511627776n)) ++this.statsData.users_type.moderator
-        else if (interaction.member && interaction.member.joinedAt && interaction.member.joinedAt > oneWeekAgo) ++this.statsData.users_type.new_member
+        if (!interaction.guild) ++this.statsData.users_type.private_message
+        else if (interaction.member && interaction.member.permissions && interaction.member.permissions.has([8n]) || interaction.member.permissions.has([32n])) ++this.statsData.users_type.admin
+        else if (interaction.member && interaction.member.permissions && interaction.member.permissions.has([8192n]) || interaction.member.permissions.has([2n]) || interaction.member.permissions.has([4n]) || interaction.member.permissions.has([4194304n]) || interaction.member.permissions.has([8388608n]) || interaction.member.permissions.has([16777216n]) || interaction.member.permissions.has([1099511627776n])) ++this.statsData.users_type.moderator
+        else if (interaction.member && interaction.member.joinedAt && new Date(interaction.member.joinedAt) > oneWeekAgo) ++this.statsData.users_type.new_member
     }
 
     /**
@@ -248,23 +242,9 @@ export default class DiscordAnalytics {
      * @param guild - The Guild instance only
      * @param {TrackGuildType} type - "create" if the event is guildCreate and "delete" if is guildDelete
      */
-    public async trackGuilds(guild: any, type: TrackGuildType) {
+    public async trackGuilds(guild: Guild, type: TrackGuildType) {
         if (this._debug) console.log(`[DISCORDANALYTICS] trackGuilds(${type}) triggered`)
         if (type === "create") this.statsData.addedGuilds++
         else this.statsData.removedGuilds++
     }
-
-    // /**
-    //  * Let DiscordAnalytics declare the events necessary for its operation.
-    //  * /!\ Not recommended for big bots
-    //  * /!\ Not compatible with other functions
-    //  * @param interactionNameResolver - A function that will resolve the name of the interaction
-    //  */
-    // public trackEvents(interactionNameResolver?: (interaction: any) => string) {
-    //     if (!this._client.isReady()) this._client.on("ready", async () => await this.init())
-    //     else this.init()
-    //     this._client.on("interactionCreate", async (interaction: any) => await this.trackInteractions(interaction, interactionNameResolver))
-    //     this._client.on("guildCreate", (guild: any) => this.trackGuilds(guild, "create"))
-    //     this._client.on("guildDelete", (guild: any) => this.trackGuilds(guild, "delete"))
-    // }
 }
