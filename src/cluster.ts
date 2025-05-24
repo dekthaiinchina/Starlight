@@ -9,8 +9,7 @@ const log = new Logger("Cluster");
 const manager = new IWorkerManager({
 	mode: "clusters",
 	path: `${__dirname}/client/index.js`,
-	shardsPerWorker: 5,
-	workerProxy: true,
+	shardsPerWorker: 4,
 	version: 10,
 	properties: {
 		browser: "Starlight",
