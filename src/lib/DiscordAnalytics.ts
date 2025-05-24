@@ -1,5 +1,4 @@
 import { Guild, WorkerClient } from "seyfert";
-import npmPackageData from "../../package.json";
 import { ApiEndpoints, ApplicationCommandType, DiscordAnalyticsOptions, ErrorCodes, InteractionData, InteractionType, Locale, TrackGuildType } from "./utils/types";
 /**
  * @class DiscordAnalytics
@@ -60,7 +59,7 @@ export default class DiscordAnalytics {
                 username: this._client.me.username,
                 avatar: this._client.me.avatar,
                 framework: "seyfert",
-                version: npmPackageData.version,
+                version: "2.5.0",
                 team: (await this._client.applications?.fetch()).owner
                     ? (await this._client.applications.fetch()).owner.hasOwnProperty("members")
                         ? (await this._client.applications.fetch()).team.members.map((member: any) => member.user.id)
