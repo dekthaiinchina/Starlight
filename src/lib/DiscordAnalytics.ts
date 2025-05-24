@@ -30,7 +30,7 @@ export default class DiscordAnalytics {
     private readonly _client: WorkerClient | any;
     private readonly _apiToken: string;
     private readonly _sharded: boolean = false;
-    private readonly _debug: boolean = false
+    private readonly _debug: boolean = true
     private readonly _headers: { 'Content-Type': string; Authorization: string; };
     private _isReady: boolean
 
