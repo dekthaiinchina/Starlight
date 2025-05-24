@@ -3,6 +3,7 @@ import { createEvent } from "seyfert";
 export default createEvent({
 	data: { once: false, name: "interactionCreate" },
 	async run(interaction, client) {
+        // @ts-ignore
         await client.analytics.trackInteractions(interaction);
 		if (interaction.isChatInput()) {
             client.logger.info(`[Commands] ${interaction.user.username} (${interaction.user.id}) Command: ${interaction.data.name}`);
