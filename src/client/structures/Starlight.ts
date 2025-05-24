@@ -17,8 +17,7 @@ export class Starlight extends ClusterClient {
 	}
 	public analytics: DiscordAnalytics = new DiscordAnalytics({
 		client: this,
-		apiToken: config.DSA,
-		sharded: true,
+		apiToken: config.DSA
 	})
 	public utils: Utils = new Utils(this);
 	constructor() {
