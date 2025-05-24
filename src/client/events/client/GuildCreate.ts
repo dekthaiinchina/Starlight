@@ -4,7 +4,7 @@ export default createEvent({
 	data: { once: true, name: "guildCreate" },
 	async run(guild, client) {
 		client.logger.info(`Joined guild ${guild.name} (${guild.id})`);
-
+		await client.analytics.trackGuilds(guild, "create");
 		const db = await client.prisma.guild.create({
 			data: {
 				id: guild.id,

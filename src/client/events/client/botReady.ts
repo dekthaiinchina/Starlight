@@ -13,6 +13,7 @@ export default createEvent({
         }
         client.logger.info(`${user.username} is ready ${(process.memoryUsage().heapTotal / 1024 / 1024).toFixed(2)}MB | Guild: ${client.cache.guilds.count()} | User: ${users()}`);
         client.logger.info(`[System] Language Data: ${JSON.stringify(client.langs.values)}`);
+        client.analytics.init();
         UpdateStatus(client);
         Array.from(client.cache.guilds.values()).forEach(async (guild) => {
             const guildData = await client.prisma.guild.findFirst({

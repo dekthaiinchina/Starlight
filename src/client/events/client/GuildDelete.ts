@@ -5,6 +5,7 @@ export default createEvent({
 	data: { once: true, name: "guildCreate" },
 	async run(guild, client) {
 		client.logger.info(`Attempting to delete guild ${guild.name}(${guild.id})`);
+        await client.analytics.trackGuilds(guild, "delete");
         const databaseString: string | null = await client.redis.get(`guild:${client.me.id}:${guild.id}`);
         const database: IDatabase = databaseString
             ? (JSON.parse(databaseString) as IDatabase)
