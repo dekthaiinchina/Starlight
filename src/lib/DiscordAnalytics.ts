@@ -242,7 +242,7 @@ export default class DiscordAnalytics {
      * @param guild - The Guild instance only
      * @param {TrackGuildType} type - "create" if the event is guildCreate and "delete" if is guildDelete
      */
-    public async trackGuilds(guild: Guild, type: TrackGuildType) {
+    public async trackGuilds(guild: any, type: TrackGuildType) {
         if (this._debug) console.log(`[DISCORDANALYTICS] trackGuilds(${type}) triggered`)
         if (type === "create") this.statsData.addedGuilds++
         else this.statsData.removedGuilds++
