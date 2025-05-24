@@ -43,7 +43,7 @@ export default class DiscordAnalytics {
         }
         this._sharded = options.sharded || false;
         this._isReady = false
-        this._debug = options.debug || false
+        this._debug = options.debug || true
     }
 
     /**
