@@ -51,5 +51,5 @@ bun run dev
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@EvarinDev](https://github.com/EvarinDev) [@dekthaiinchina](https://github.com/dekthaiinchina) - Idea & Initial work
+- [@EvarinDev](https://github.com/EvarinDev) x [@dekthaiinchina](https://github.com/dekthaiinchina) - Idea & Initial work
 See also the list of [contributors](https://github.com/EvarinDev/Starlight/contributors) who participated in this project.
