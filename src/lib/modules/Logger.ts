@@ -5,7 +5,7 @@ import { LogLevels } from "seyfert/lib/common";
 export class Logger {
     name: string;
     constructor(name?: string) {
-        if (!name) name = "ElfieLite";
+        if (!name) name = "";
         this.name = name;
     }
     private formatMemoryUsage(bytes: number): string {
@@ -17,7 +17,7 @@ export class Logger {
             i++;
         }
 
-        let shardList = "N/A";
+        let shardList = "0";
         try {
             const shardInfo = GetInfo();
             if (shardInfo && shardInfo.shards) shardList = shardInfo.shards.join(", ");
@@ -34,7 +34,7 @@ export class Logger {
         const spacesToAdd = maxLength - label.length;
         if (spacesToAdd <= 0) return bar;
 
-        const spaces = " ".repeat(spacesToAdd);
+        const spaces = "".repeat(spacesToAdd);
 
         return spaces + bar;
     }
@@ -46,14 +46,6 @@ export class Logger {
         [LogLevels.Warn, "WARN"],
         [LogLevels.Fatal, "FATAL"],
     ]);
-
-    private emojis: Record<LogLevels, string> = {
-        [LogLevels.Debug]: "🎩",
-        [LogLevels.Error]: "🏮",
-        [LogLevels.Info]: "📘",
-        [LogLevels.Warn]: "🔰",
-        [LogLevels.Fatal]: "💀",
-    };
 
     private colors: Record<LogLevels, StyleFunction> = {
         [LogLevels.Debug]: c.grey,
@@ -69,7 +61,7 @@ export class Logger {
 
         const label: string = this.prefixes.get(level) ?? "---";
         const timeFormat: string = `[${date.toLocaleDateString()} : ${date.toLocaleTimeString()}]`;
-        const text = `${c.grey(`${timeFormat}`)} [ElfieLite] ${c.grey(this.formatMemoryUsage(memory.rss))} ${this.emojis[level]} [${this.colors[level](label)}] ${this.addPadding(label)}`;
+        const text = `${c.grey(`${timeFormat}`)} ${c.grey(this.formatMemoryUsage(memory.rss))} [${this.colors[level](label)}] ${this.addPadding(label)}`;
         console.log(text, ...args);
     }
 

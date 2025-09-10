@@ -22,6 +22,7 @@ export const LangCommandOptions = {
 	name: "lang",
 	description: "[EN]: Change the language | [TH]: เปลี่ยนภาษา",
 })
+
 @Options(LangCommandOptions)
 export default class LangCommand extends Command {
 	async run(ctx: CommandContext) {

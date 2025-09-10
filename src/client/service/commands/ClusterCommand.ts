@@ -1,5 +1,5 @@
 import { ActionRow, CommandContext, Embed, StringSelectMenu } from 'seyfert';
-import { IDatabase } from './../../interfaces/IDatabase';
+import { IDatabase } from '../../interfaces/IDatabase';
 import { UsingClient } from 'seyfert';
 import { ServiceExecute } from "@/client/structures/ServiceExecute";
 
@@ -68,7 +68,7 @@ const ClusterCommand: ServiceExecute = {
 
                 clusterInfo.forEach((cluster) => {
                     embed.addFields({
-                        name: `<:8891bluestar:1267053991473320069> Cluster: ${cluster.id}`,
+                        name: `Cluster: ${cluster.id}`,
                         value: `\`\`\`autohotkey\nShards: ${cluster.shards.join(', ')} \nGuilds : ${cluster.guilds}\nUsers : ${cluster.users}\nMemory : ${interaction.client.FormatMemory(cluster.memory)}\nUptime: ${(interaction.client.FormatTime(cluster.uptime))} \`\`\``,
                         inline: true
                     });

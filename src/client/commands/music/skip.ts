@@ -6,6 +6,7 @@ import { Declare, Command, type CommandContext } from "seyfert";
 	description: "[EN]: Skip the music | [TH]: ข้ามเพลง",
 	contexts: ["Guild"],
 })
+
 export default class SkipCommand extends Command {
 	async run(ctx: CommandContext) {
 		try {

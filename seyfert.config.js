@@ -1,4 +1,3 @@
-// @ts-check is better
 const { config } = require('seyfert');
 require("dotenv/config");
 const c = require("./dist/config.js");

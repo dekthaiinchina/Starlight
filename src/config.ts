@@ -9,10 +9,10 @@ const config: { [key: string]: IConfig } = {
 		DSA: process.env.DSA,
 		Lavalink: [
 			{
-				identifier: "Anantix SG",
-				host: "ipv4.digitalocean-sg.anantix.network",
+				identifier: "LavalinkNode",
+				host: "localhost",
 				port: 2333,
-				password: "A-SCARLET-ROSE-AMONG-THORNS-ENVIED-BY-ALL",
+				password: "youshallnotpass",
 				secure: false,
 				requestTimeout: 10000,
 				retryDelay: 5000,
@@ -20,6 +20,7 @@ const config: { [key: string]: IConfig } = {
 			},
 		],
 	},
+
 	production: {
 		TOKEN: process.env.PRODUCTION_TOKEN,
 		REDIS: process.env.PRODUCTION_REDIS,
@@ -27,10 +28,10 @@ const config: { [key: string]: IConfig } = {
 		DSA: process.env.DSA,
 		Lavalink: [
 			{
-				identifier: "Anantix SG",
-				host: "ipv4.digitalocean-sg.anantix.network",
+				identifier: "LavalinkNode",
+				host: "localhost",
 				port: 2333,
-				password: "A-SCARLET-ROSE-AMONG-THORNS-ENVIED-BY-ALL",
+				password: "youshallnotpass",
 				secure: false,
 				requestTimeout: 10000,
 				retryDelay: 5000,
@@ -39,6 +40,7 @@ const config: { [key: string]: IConfig } = {
 		],
 	},
 };
+
 export default config[process.env.NODE_ENV || "development"];
 
 interface IConfig {

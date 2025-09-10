@@ -7,11 +7,13 @@ export const VolumeCommandOptions = {
 		required: true,
 	}),
 };
+
 @Declare({
 	name: "volume",
 	description: "[EN]: Change the volume | [TH]: เปลี่ยนระดับเสียง",
 	contexts: ["Guild"],
 })
+
 @Options(VolumeCommandOptions)
 export default class VolumeCommand extends Command {
 	async run(ctx: CommandContext) {

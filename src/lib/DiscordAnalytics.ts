@@ -1,18 +1,9 @@
-import { Starlight } from "@/client/structures/Starlight";
-import {
-    ApiEndpoints,
-    ApplicationCommandType,
-    DiscordAnalyticsOptions,
-    ErrorCodes,
-    InteractionData,
-    InteractionType,
-    Locale,
-    TrackGuildType
-} from "./utils/types";
+import { Bot } from "@/client/structures/Client";
+import { ApiEndpoints, ApplicationCommandType, DiscordAnalyticsOptions, ErrorCodes, InteractionData, InteractionType, Locale, TrackGuildType } from "./utils/types";
 import { Guild, Interaction, ModalSubmitInteraction } from "seyfert";
 
 export default class DiscordAnalytics {
-    private readonly _client: Starlight;
+    private readonly _client: Bot;
     private readonly _apiToken: string;
     private readonly _sharded: boolean = false;
     private readonly _debug: boolean = true
@@ -76,10 +67,10 @@ export default class DiscordAnalytics {
                 //     ((await this._client.shard?.broadcastEval((c: any) => c.guilds.cache.reduce((a: number, g: any) => a + (g.memberCount || 0), 0)))?.reduce((a: number, b: number) => a + b, 0) || 0) :
                 //     this._client.guilds.cache.reduce((a: number, g: any) => a + (g.memberCount || 0), 0);
                 let guildCount = this._sharded ?
-                    ((await this._client.worker?.broadcastEval((c: Starlight) => c.cache.guilds.count())) || 0) as number :
+                    ((await this._client.worker?.broadcastEval((c: Bot) => c.cache.guilds.count())) || 0) as number :
                     this._client.cache.guilds.count();
                 let userCount = this._sharded ?
-                    ((await this._client.worker?.broadcastEval((c: Starlight) => {
+                    ((await this._client.worker?.broadcastEval((c: Bot) => {
                         let totalMembers = 0;
                         for (const guild of c.cache.guilds.values().filter((g) => g.memberCount)) {
                             totalMembers += guild.memberCount;
@@ -165,7 +156,7 @@ export default class DiscordAnalytics {
         let guildsMembers: number[] = []
 
         if (!this._sharded) guildsMembers = this._client.cache.guilds.values().map((guild: Guild<"cached">) => guild.memberCount)
-        else guildsMembers = [].concat(await this._client.worker?.broadcastEval((c: Starlight) => c.cache.guilds.values().map((guild: any) => guild.memberCount)))
+        else guildsMembers = [].concat(await this._client.worker?.broadcastEval((c: Bot) => c.cache.guilds.values().map((guild: any) => guild.memberCount)))
 
         for (const guild of guildsMembers) {
             if (guild <= 100) res.little++

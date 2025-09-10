@@ -12,7 +12,7 @@ function formatMemoryUsage(bytes: number): string {
 		i++;
 	}
 
-	let shardList = "N/A";
+	let shardList = "0";
 	try {
 		const shardInfo = GetInfo();
 		if (shardInfo && shardInfo.shards) shardList = shardInfo.shards.join(", ");
@@ -28,7 +28,7 @@ function addPadding(label: string): string {
 	const bar = ">";
 	const spacesToAdd = maxLength - label.length;
 	if (spacesToAdd <= 0) return bar;
-	const spaces = " ".repeat(spacesToAdd);
+	const spaces = "".repeat(spacesToAdd);
 	return spaces + bar;
 }
 
@@ -39,14 +39,6 @@ export function customLogger(_this: Logger, level: LogLevels, args: unknown[]): 
 	const label: string = Logger.prefixes.get(level) ?? "---";
 	const timeFormat: string = `[${date.toLocaleDateString()} : ${date.toLocaleTimeString()}]`;
 
-	const emojis: Record<LogLevels, string> = {
-		[LogLevels.Debug]: "🎩",
-		[LogLevels.Error]: "🏮",
-		[LogLevels.Info]: "📘",
-		[LogLevels.Warn]: "🔰",
-		[LogLevels.Fatal]: "💀",
-	};
-
 	const colors: Record<LogLevels, StyleFunction> = {
 		[LogLevels.Debug]: c.grey,
 		[LogLevels.Error]: c.red,
@@ -54,6 +46,6 @@ export function customLogger(_this: Logger, level: LogLevels, args: unknown[]): 
 		[LogLevels.Warn]: c.yellow,
 		[LogLevels.Fatal]: c.red,
 	};
-	const text = `${c.gray(`${timeFormat}`)} [Starlight] ${c.grey(formatMemoryUsage(memory.rss))} ${emojis[level]} [${colors[level](label)}] ${addPadding(label)}`;
+	const text = `${c.gray(`${timeFormat}`)} ${c.grey(formatMemoryUsage(memory.rss))} [${colors[level](label)}] ${addPadding(label)}`;
 	return [text, ...args];
 }

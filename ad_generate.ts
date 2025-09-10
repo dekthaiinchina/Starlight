@@ -22,20 +22,24 @@ async function generateAds() {
         console.error("Try 'bun ad_generate.ts --help' for more information.");
         return;
     }
+
     const input = process.argv[2];
     if (!input) {
         console.error("Please provide a language code (en or th).");
         return;
     }
+
     const lang = input.toLowerCase();
     if (lang !== "en" && lang !== "th") {
         console.error("Invalid language code. Please use 'en' or 'th'.");
         return;
     }
+
     const name = process.argv[3];
     const description = process.argv[4];
     const image = process.argv[5];
     const url = process.argv[6];
+    
     if (!name || !description || !image || !url) {
         console.error("Please provide all required fields: name, description, image, url.");
         return;
@@ -86,7 +90,7 @@ async function generateAds() {
                 url: url,
             },
         });
-        console.log("\n✅ Ad created successfully!");
+        console.log("\nAd created successfully!");
         console.log(`ID: ${ad.id}`);
         console.log(`Language: ${ad.lang}`);
         console.log(`Name: ${ad.name}`);

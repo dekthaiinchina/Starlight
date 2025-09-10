@@ -1,9 +1,9 @@
 import { IDatabase } from "../interfaces/IDatabase";
-import { Starlight } from "./Starlight";
+import { Bot } from "./Client";
 
 export class Utils {
     public constructor(
-        private client: Starlight,
+        private client: Bot,
     ) {}
     public async GetAds(lang: "en" | "th"): Promise<{
         title: string;

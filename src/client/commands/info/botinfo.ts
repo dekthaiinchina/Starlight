@@ -5,6 +5,7 @@ import { Declare, Command, type CommandContext } from "seyfert";
 	name: "botinfo",
 	description: "[EN]: Show the bot information | [TH]: แสดงข้อมูลของบอท",
 })
+
 export default class BotinfoCommand extends Command {
 	async run(ctx: CommandContext) {
 		try {

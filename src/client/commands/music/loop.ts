@@ -27,6 +27,7 @@ export const LoopCommandOptions = {
 	description: "[EN]: Loop the queue | [TH]: วนรายการ",
 	contexts: ["Guild"],
 })
+
 @Options(LoopCommandOptions)
 export default class LoopCommand extends Command {
 	async run(ctx: CommandContext) {

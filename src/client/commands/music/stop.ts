@@ -6,6 +6,7 @@ import { Declare, Command, type CommandContext } from "seyfert";
 	description: "[EN]: Stop the music | [TH]: หยุดเพลง",
 	contexts: ["Guild"],
 })
+
 export default class StopCommand extends Command {
 	async run(ctx: CommandContext) {
 		try {

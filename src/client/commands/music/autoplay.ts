@@ -23,6 +23,7 @@ export const AutoPlayCommandOptions = {
 	description: "[EN]: AutoPlay the music | [TH]: เล่นเพลงอัตโนมัติ",
 	contexts: ["Guild"],
 })
+
 @Options(AutoPlayCommandOptions)
 export default class AutoPlayCommand extends Command {
 	async run(ctx: CommandContext<typeof AutoPlayCommandOptions>) {

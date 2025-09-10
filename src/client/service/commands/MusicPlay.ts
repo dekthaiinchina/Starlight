@@ -61,17 +61,17 @@ const MusicPlay: ServiceExecute = {
 			if (!ad || !ad.url || !ad.title || !ad.image) {
 				console.warn("Invalid ad data, using fallback values");
 				ad = {
-					title: "Support Us",
-					url: "https://discord.gg/anantix",
-					image: "https://r2.anantix.network/assets/img/frame95.png"
+					title: "",
+					url: "",
+					image: ""
 				};
 			}
 		} catch (error) {
 			console.error("Error fetching ad:", error);
 			ad = {
-				title: "Support Us",
-				url: "https://discord.gg/anantix",
-				image: "https://r2.anantix.network/assets/img/frame95.png"
+				title: "",
+				url: "",
+				image: ""
 			};
 		}
 
@@ -292,4 +292,3 @@ const MusicPlay: ServiceExecute = {
 };
 
 export default MusicPlay;
-

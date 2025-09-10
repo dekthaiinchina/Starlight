@@ -5,15 +5,14 @@ import { PresenceUpdateStatus } from "seyfert/lib/types";
 import os from "os";
 
 const log = new Logger("Cluster");
-
 const manager = new IWorkerManager({
 	mode: "clusters",
 	path: `${__dirname}/client/index.js`,
 	shardsPerWorker: 4,
 	version: 10,
 	properties: {
-		browser: "Starlight",
-		device: "Starlight",
+		browser: "",
+		device: "",
 		os: os.platform(),
 	},
 	presence(shardId, workerId) {
@@ -23,9 +22,9 @@ const manager = new IWorkerManager({
 			afk: false,
 			activities: [
 				{
-					name: "Starlight make by Anantix Network",
+					name: "with Lavalink!",
 					state: `Cluster ${workerId} | Shard ${shardId}`,
-					type: 0,
+					type: 1,
 				},
 			]
 		};
@@ -50,6 +49,4 @@ process.on("uncaughtExceptionMonitor", (err: Error) => {
 })
 
 manager.on("Debug", (debug) => log.debug(debug));
-manager.start()
-	.then(() => log.info("All clusters spawned"))
-	.catch((error) => console.error("Error spawning clusters:", error));
+manager.start().then(() => log.info("All clusters spawned")).catch((error) => console.error("Error spawning clusters:", error));

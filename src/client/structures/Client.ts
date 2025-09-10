@@ -7,7 +7,7 @@ import { LithiumXManager } from "lithiumx";
 import { ClusterClient } from "./utils/cluster/ClusterClient";
 import { Utils } from "./Utils";
 import DiscordAnalytics from "@/lib/DiscordAnalytics";
-export class Starlight extends ClusterClient {
+export class Bot extends ClusterClient {
 	public redis: Redis;
 	public lithiumx: LithiumXManager;
 	public prisma: PrismaClient;

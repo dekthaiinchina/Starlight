@@ -1,8 +1,8 @@
 import { Logger } from "seyfert";
-import { Starlight } from "./structures/Starlight";
+import { Bot } from "./structures/Client";
 import { customLogger } from "./structures/utils/Logger";
 
-export const client = new Starlight();
+export const client = new Bot();
 Logger.customize(customLogger);
 
 process.on("unhandledRejection", (reason, promise) => {

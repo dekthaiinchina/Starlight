@@ -24,6 +24,7 @@ export const MoveNodeCommandOptions = {
 	description: "[EN]: Move Node | [TH]: ย้ายโหนด",
 	contexts: ["Guild"],
 })
+
 @Options(MoveNodeCommandOptions)
 export default class PauseCommand extends Command {
 	async run(ctx: CommandContext) {

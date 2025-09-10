@@ -9,4 +9,5 @@ const NodeConnect: PlayerExecute = {
 		return Promise.resolve().then(() => client.logger.info(`Node ${node.options.identifier} connected`));
 	},
 };
+
 export default NodeConnect;

@@ -5,6 +5,7 @@ import { Declare, Command, type CommandContext } from "seyfert";
 	name: "nodes",
 	description: "[EN]: Show the nodes | [TH]: แสดงโหนด",
 })
+
 export default class NodeCommand extends Command {
 	async run(ctx: CommandContext) {
 		try {

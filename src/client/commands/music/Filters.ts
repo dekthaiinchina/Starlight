@@ -24,11 +24,13 @@ export const FiltersCommandOptions = {
         required: false,
     }),
 };
+
 @Declare({
 	name: "filters",
 	description: "[EN]: Apply a filter to the current song | [TH]: ใช้ตัวกรองกับเพลงปัจจุบัน",
 	contexts: ["Guild"],
 })
+
 @Options(FiltersCommandOptions)
 export default class PlayCommand extends Command {
 	async run(ctx: CommandContext) {

@@ -1,10 +1,10 @@
 import { ParseClient, ParseLocales } from "seyfert";
-import { Starlight } from "./structures/Starlight";
+import { Bot } from "./structures/Client";
 import type English from "./languages/en";
 
 declare module "seyfert" {
 	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
-	interface UsingClient extends ParseClient<Starlight> {}
+	interface UsingClient extends ParseClient<Bot> {}
 	// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 	interface DefaultLocale extends ParseLocales<typeof English> {}
 }

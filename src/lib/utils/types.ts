@@ -5,6 +5,7 @@ export interface EventsToTrack {
     trackUserLanguage: boolean;
     trackGuildsLocale: boolean;
 }
+
 export const ApiEndpoints = {
     BASE_URL: 'https://discordanalytics.xyz/api',
     EDIT_SETTINGS_URL: '/bots/:id',

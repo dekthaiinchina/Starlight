@@ -57,7 +57,7 @@ const Botinfo: ServiceExecute = {
             ┊ **Member(s):** \`${totalUsers}\`
             ╰ **Ping:** \`${interaction.client.latency}ms\`
             **Data:**
-            ┊ **API:** \`Starlight ${(await import("../../../../package.json")).version}\`
+            ┊ **API:** \`${(await import("../../../../package.json")).version}\`
             ┊ **Node.js:** \`${process.version}\`
             ┊ **LithiumX:** \`v${(await import("../../../../package.json")).dependencies.lithiumx}\`
             ╰ **Seyfert:** \`v${(await import("../../../../package.json")).dependencies.seyfert}\`
@@ -80,4 +80,5 @@ const Botinfo: ServiceExecute = {
         }
     },
 };
+
 export default Botinfo;

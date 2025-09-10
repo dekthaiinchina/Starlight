@@ -21,11 +21,13 @@ export const PlayCommandOptions = {
 		},
 	}),
 };
+
 @Declare({
 	name: "play",
 	description: "[EN]: Play a song | [TH]: เล่นเพลง",
 	contexts: ["Guild"],
 })
+
 @Options(PlayCommandOptions)
 export default class PlayCommand extends Command {
 	async run(ctx: CommandContext) {

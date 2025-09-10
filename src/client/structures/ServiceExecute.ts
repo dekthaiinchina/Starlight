@@ -1,6 +1,6 @@
 import fs from "fs/promises";
 import path from "path";
-import { Starlight } from "./Starlight";
+import { Bot } from "./Client";
 import { LithiumXNode, LithiumXPlayer, ManagerEvents, Track, } from "lithiumx";
 import { CommandContext } from "seyfert";
 import { IDatabase } from "../interfaces/IDatabase";
@@ -32,7 +32,7 @@ export class ServiceLoader {
     private loadedFiles: Set<string> = new Set();
     private debounceTimers: Map<string, NodeJS.Timeout> = new Map();
 
-    constructor(private client: Starlight) { }
+    constructor(private client: Bot) { }
 
     public async watchServices(): Promise<void> {
         const servicesDir = path.join(__dirname, "../service");

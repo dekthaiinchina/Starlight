@@ -5,6 +5,7 @@ import { Declare, Command, type CommandContext } from "seyfert";
     name: "cluster",
     description: "[EN]: Show the cluster information | [TH]: แสดงข้อมูลของคลัสเตอร์",
 })
+
 export default class ClusterCommand extends Command {
     async run(ctx: CommandContext) {
         try {

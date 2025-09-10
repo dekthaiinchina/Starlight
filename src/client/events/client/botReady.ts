@@ -12,7 +12,7 @@ export default createEvent({
             return totalMembers;
         }
         client.logger.info(`${user.username} is ready ${(process.memoryUsage().heapTotal / 1024 / 1024).toFixed(2)}MB | Guild: ${client.cache.guilds.count()} | User: ${users()}`);
-        client.logger.info(`[System] Language Data: ${JSON.stringify(client.langs.values)}`);
+        //client.logger.info(`[System] Language Data: ${JSON.stringify(client.langs.values)}`);
         await client.analytics.init();
         UpdateStatus(client);
         Array.from(client.cache.guilds.values()).forEach(async (guild) => {
@@ -25,7 +25,7 @@ export default createEvent({
                         client.prisma.guild.create({
                             data: {
                                 id: guild.id,
-                                lang: "th",
+                                lang: "en",
                                 name: guild.name,
                                 room: { create: { id: "" } },
                                 ai: { create: { name: "", channel: "" } },
