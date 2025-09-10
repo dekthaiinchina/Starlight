@@ -24,7 +24,7 @@ These instructions will get you a copy of the project up and running on your loc
 What things you need to install the software and how to install them.
 
 ```
-Bun 1.1.29
+Bun 1.2.21
 ```
 
 ### Installing
@@ -34,7 +34,7 @@ A step by step series of examples that tell you how to get a development env run
 Say what the step will be
 
 ```
-git clone https://github.com/EvarinDev/Starlight.git
+git clone https://github.com/dekthaiinchina/Starlight.git
 cd Starlight
 bun run full-install
 Rename .env.example to .env and Setup Config
