@@ -69,7 +69,3 @@ bun run dev
 
 - [@EvarinDev](https://github.com/EvarinDev) - Idea & Initial work
 See also the list of [contributors](https://github.com/EvarinDev/Starlight/contributors) who participated in this project.
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=EvarinDev/Starlight&type=Date)](https://star-history.com/#EvarinDev/Starlight&Date)
