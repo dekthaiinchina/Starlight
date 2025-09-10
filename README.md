@@ -1,4 +1,4 @@
-<h3 align="center">Starlight</h3>
+<h1 align="center">Starlight</h1>
 
 <div align="center">
 
@@ -9,29 +9,13 @@
 
 </div>
 
----
 
-<p align="center"> Discord Bot Music
-    <br> 
-</p>
-
-## 📝 Table of Contents
-
-- [📝 Table of Contents](#-table-of-contents)
-- [🧐 About ](#-about-)
-- [🏁 Getting Started ](#-getting-started-)
-  - [Prerequisites](#prerequisites)
-  - [Installing](#installing)
-- [⛏️ Built Using ](#️-built-using-)
-- [✍️ Authors ](#️-authors-)
-- [Star History](#star-history)
-
-## 🧐 About <a name = "about"></a>
-This bot is the **full source code** of [Asta](https://discord.com/application-directory/1259476682730111097), a powerful and efficient Discord bot. The implementation below uses **Seyfert** and **TypeScript**, providing a solid structure to handle messages and commands effortlessly.
+## About
+This bot is the **full source code** of Asta and Annette, a powerful and efficient Discord bot. The implementation below uses **Seyfert** and **TypeScript**, providing a solid structure to handle messages and commands effortlessly.
 
 Asta is designed to deliver a smooth user experience while being highly extensible. This code contains everything needed to get Asta up and running on your own Discord server, complete with essential features for managing messages, handling commands, and integrating with music functionality.
 
-## 🏁 Getting Started <a name = "getting_started"></a>
+## 🏁 Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
 
@@ -57,7 +41,7 @@ Rename .env.example to .env and Setup Config
 bun run dev
 ```
 
-## ⛏️ Built Using <a name = "built_using"></a>
+## ⛏️ Built Using
 
 - [MongoDB](https://www.mongodb.com/) - Database
 - [Prisma](https://www.prisma.io/) - Database toolkit
@@ -67,5 +51,5 @@ bun run dev
 
 ## ✍️ Authors <a name = "authors"></a>
 
-- [@EvarinDev](https://github.com/EvarinDev) - Idea & Initial work
+- [@EvarinDev](https://github.com/EvarinDev) [@dekthaiinchina](https://github.com/dekthaiinchina) - Idea & Initial work
 See also the list of [contributors](https://github.com/EvarinDev/Starlight/contributors) who participated in this project.
