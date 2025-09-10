@@ -43,7 +43,7 @@ bun run dev
 
 ## ⛏️ Built Using
 
-- [MongoDB](https://www.mongodb.com/) - Database
+- [MongoDB](https://account.mongodb.com/account/login) - Database
 - [Redis](https://cloud.redis.io/) - Database
 - [Prisma](https://www.prisma.io/) - Database toolkit
 - [Seyfert](https://www.seyfert.dev/) - Discord framework
