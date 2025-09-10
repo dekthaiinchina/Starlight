@@ -44,6 +44,7 @@ bun run dev
 ## ⛏️ Built Using
 
 - [MongoDB](https://www.mongodb.com/) - Database
+- [Redis](https://cloud.redis.io/) - Database
 - [Prisma](https://www.prisma.io/) - Database toolkit
 - [Seyfert](https://www.seyfert.dev/) - Discord framework
 - [Lithiumx](https://github.com/anantix-network/LithiumX) - Lavalink wrapper
