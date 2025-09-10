@@ -15,7 +15,7 @@ This bot is the **full source code** of Asta and Annette, a powerful and efficie
 
 Asta and Annette is designed to deliver a smooth user experience while being highly extensible. This code contains everything needed to get Asta up and running on your own Discord server, complete with essential features for managing messages, handling commands, and integrating with music functionality.
 
-## 🏁 Getting Started
+## Getting Started
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
@@ -41,7 +41,7 @@ Rename .env.example to .env and Setup Config
 bun run dev
 ```
 
-## ⛏️ Built Using
+## Built Using
 
 - [MongoDB](https://account.mongodb.com/account/login) - Database
 - [Redis](https://cloud.redis.io/) - Database
@@ -51,7 +51,7 @@ bun run dev
 - [DiscordAnalytics](https://discordanalytics.xyz/) - Discord Analytics App
 - [Bun](https://bun.sh/) - JavaScript runtime
 
-## ✍️ Authors <a name = "authors"></a>
+## Authors <a name = "authors"></a>
 
 - [@EvarinDev](https://github.com/EvarinDev) x [@dekthaiinchina](https://github.com/dekthaiinchina) - Idea & Initial work
 See also the list of [contributors](https://github.com/EvarinDev/Starlight/contributors) who participated in this project.
