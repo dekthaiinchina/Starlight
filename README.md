@@ -3,8 +3,8 @@
 <div align="center">
 
 [![Status](https://img.shields.io/badge/status-active-success.svg)]()
-[![GitHub Issues](https://img.shields.io/github/issues/EvarinDev/Starlight.svg)](https://github.com/EvarinDev/Starlight/issues)
-[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/EvarinDev/Starlight.svg)](https://github.com/EvarinDev/Starlight/pulls)
+[![GitHub Issues](https://img.shields.io/github/issues/dekthaiinchina/Starlight.svg)](https://github.com/dekthaiinchina/Starlight/issues)
+[![GitHub Pull Requests](https://img.shields.io/github/issues-pr/dekthaiinchina/Starlight.svg)](https://github.com/dekthaiinchina/Starlight/pulls)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](/LICENSE)
 
 </div>
@@ -48,6 +48,7 @@ bun run dev
 - [Prisma](https://www.prisma.io/) - Database toolkit
 - [Seyfert](https://www.seyfert.dev/) - Discord framework
 - [Lithiumx](https://github.com/anantix-network/LithiumX) - Lavalink wrapper
+- [DiscordAnalytics](https://discordanalytics.xyz/)
 - [Bun](https://bun.sh/) - JavaScript runtime
 
 ## ✍️ Authors <a name = "authors"></a>
