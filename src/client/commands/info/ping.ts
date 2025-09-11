@@ -2,7 +2,7 @@ import { Declare, Command, type CommandContext, Embed } from "seyfert";
 
 @Declare({
     name: "ping",
-    description: "Show the ping with discord",
+    description: "[EN]: Show the ping with discord | [TH]: แสดงค่าความหน่วง (ping) ใน Discord",
 })
 
 export default class PingCommand extends Command {
@@ -56,3 +56,4 @@ export default class PingCommand extends Command {
         return ctx.editResponse({ embeds: [updatedEmbed] });
     }
 }
+
