@@ -34,7 +34,7 @@ const NodeCommand: ServiceExecute = {
 			};
 		});
 
-		const description = `<:planet:1266771069604462672> **All nodes: [${client.lithiumx.nodes.size}]**\n\`\`\`ml\nConnected : ${client.lithiumx.nodes.reduce((a, b) => a + b.stats.players, 0)} Room\nPlaying : ${client.lithiumx.nodes.reduce((a, b) => a + b.stats.playingPlayers, 0)} Room\n\`\`\``;
+		const description = `<:ringed_planet:1266771069604462672> **All nodes: [${client.lithiumx.nodes.size}]**\n\`\`\`ml\nConnected : ${client.lithiumx.nodes.reduce((a, b) => a + b.stats.players, 0)} Room\nPlaying : ${client.lithiumx.nodes.reduce((a, b) => a + b.stats.playingPlayers, 0)} Room\n\`\`\``;
 
 		await interaction.editOrReply({
 			embeds: [
@@ -59,3 +59,4 @@ const NodeCommand: ServiceExecute = {
 };
 
 export default NodeCommand;
+
