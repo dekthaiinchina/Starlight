@@ -48,7 +48,7 @@ bun run dev
 - [Redis](https://cloud.redis.io/) - Database
 - [Prisma](https://www.prisma.io/) - Database toolkit
 - [Seyfert](https://www.seyfert.dev/) - Discord framework
-- [Lithiumx](https://github.com/anantix-network/LithiumX) - Lavalink wrapper
+- [LithiumX](https://github.com/anantix-network/LithiumX) - Lavalink wrapper
 - [DiscordAnalytics](https://discordanalytics.xyz/) - Discord Analytics App
 - [Bun](https://bun.sh/) - JavaScript runtime
 
