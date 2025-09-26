@@ -11,7 +11,7 @@
 
 
 ## About
-This bot is the **full source code** of Asta and Annette, a powerful and efficient Discord bot. The implementation below uses **Seyfert** and **TypeScript**, providing a solid structure to handle messages and commands effortlessly.
+This bot is the **full source code** of Asta and Annette, a powerful and efficient discord bot. The implementation below uses **Seyfert** and **TypeScript**, providing a solid structure to handle messages and commands effortlessly.
 
 Asta and Annette is designed to deliver a smooth user experience while being highly extensible. This code contains everything needed to get Asta up and running on your own Discord server, complete with essential features for managing messages, handling commands, and integrating with music functionality.
 
