@@ -17,8 +17,10 @@ limitations under the License.
 EN: It is prohibited to sell this source code without written consent from the copyright owner.
 TH: ห้ามนำ source code นี้ไปขายโดยไม่ได้รับการยินยอมเป็นลายลักษณ์อักษรจากเจ้าของลิขสิทธิ์
 
-EN: The source code in this repository is a continuation of the original project developed by the previous developer
-    which contained bugs and has not been updated or maintained for a long period of time.
-    The usage terms of the source code remain subject to the intentions of the original developer.
+EN: The source code in this repository is a continuation of the original project developed 
+    by the previous developer which contained bugs and has not been updated or maintained
+    for a long period of time. The usage terms of the source code remain subject
+    to the intentions of the original developer.
+
 TH: source code ใน repository นี้ เป็นการพัฒนาต่อยอดจากโปรเจคเดิมของผู้พัฒนาเก่า
     ซึ่งมีบัคและไม่ได้อัพเดทแก้ไขมาเป็นเวลานาน ข้อตกลงการใช้งาน source code ยังคงยึดถือตามเจตจํานงของผู้พัฒนาเดิม
